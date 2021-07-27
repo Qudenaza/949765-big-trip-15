@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
-* Студент: [Олег Васин](https://up.htmlacademy.ru/ecmascript/15/user/949765).
-* Наставник: `Неизвестно`.
+- Студент: [Олег Васин](https://up.htmlacademy.ru/ecmascript/15/user/949765).
+- Наставник: [Дмитрий Гуляев](https://htmlacademy.ru/profile/id87930).
 
 ---
 
