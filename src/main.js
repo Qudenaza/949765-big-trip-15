@@ -1,10 +1,10 @@
-import { createSiteMenuTemplate } from "./view/site-menu.js";
-import { createTripInfoTemplate } from "./view/trip-info.js";
-import { createTripCostTemplate } from "./view/trip-cost.js";
-import { createTripFiltersTemplate } from "./view/trip-filters.js";
-import { createTripSortingTemplate } from "./view/trip-sorting.js";
-import { createAddNewPointTemplate } from "./view/add-new-point.js";
-import { createTripPointTemplate } from "./view/trip-point.js";
+import { createSiteMenuTemplate } from './view/site-menu.js';
+import { createTripInfoTemplate } from './view/trip-info.js';
+import { createTripCostTemplate } from './view/trip-cost.js';
+import { createTripFiltersTemplate } from './view/trip-filters.js';
+import { createTripSortingTemplate } from './view/trip-sorting.js';
+import { createAddNewPointTemplate } from './view/add-new-point.js';
+import { createTripPointTemplate } from './view/trip-point.js';
 
 const TRIP_POINTS_COUNT = 3;
 
