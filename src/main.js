@@ -9,9 +9,7 @@ import { generateTripPoint } from './mock/trip.js';
 
 const TRIP_POINTS_COUNT = 16;
 
-const tripPoints = new Array(TRIP_POINTS_COUNT).fill('').map(() => generateTripPoint()).sort((a, b) => {
-  return new Date(a.date_from) - new Date(b.date_from);
-});
+const tripPoints = new Array(TRIP_POINTS_COUNT).fill().map(() => generateTripPoint()).sort((a, b) => new Date(a.date_from) - new Date(b.date_from));
 
 const render = (container, template, position) => {
   container.insertAdjacentHTML(position, template);
