@@ -3,10 +3,13 @@ import { createTripInfoTemplate } from './view/trip-info.js';
 import { createTripCostTemplate } from './view/trip-cost.js';
 import { createTripFiltersTemplate } from './view/trip-filters.js';
 import { createTripSortingTemplate } from './view/trip-sorting.js';
-import { createAddNewPointTemplate } from './view/add-new-point.js';
+import { createTripPointEditTemplate } from './view/trip-point-edit.js';
 import { createTripPointTemplate } from './view/trip-point.js';
+import { generateTripPoint } from './mock/trip.js';
 
-const TRIP_POINTS_COUNT = 3;
+const TRIP_POINTS_COUNT = 16;
+
+const tripPoints = new Array(TRIP_POINTS_COUNT).fill().map(() => generateTripPoint()).sort((a, b) => new Date(a.date_from) - new Date(b.date_from));
 
 const render = (container, template, position) => {
   container.insertAdjacentHTML(position, template);
@@ -19,11 +22,11 @@ const tripEventsListElement = document.querySelector('.trip-events__list');
 
 render(siteMenuContainer, createSiteMenuTemplate(), 'beforeend');
 render(tripInfoContainer, createTripInfoTemplate(), 'beforeend');
-render(tripInfoContainer, createTripCostTemplate(), 'beforeend');
+render(tripInfoContainer, createTripCostTemplate(tripPoints), 'beforeend');
 render(tripFiltersContainer, createTripFiltersTemplate(), 'beforeend');
 render(tripEventsListElement, createTripSortingTemplate(), 'beforebegin');
-render(tripEventsListElement, createAddNewPointTemplate(), 'afterbegin');
+render(tripEventsListElement, createTripPointEditTemplate(), 'afterbegin');
 
 for (let i = 0; i < TRIP_POINTS_COUNT; i++) {
-  render(tripEventsListElement, createTripPointTemplate(), 'beforeend');
+  render(tripEventsListElement, createTripPointTemplate(tripPoints[i]), 'beforeend');
 }
