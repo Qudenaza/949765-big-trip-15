@@ -201,5 +201,10 @@ const BLANK_TRIP_POINT = {
   isFavorite: false,
   isBlank: true,
 };
+const NO_TRIP_MESSAGES = {
+  'everything': 'Click New Event to create your first point',
+  'future': 'There are no future events now',
+  'past': 'There are no past events now',
+};
 
-export { OFFER_TYPES, TRIP_TYPES, FILTER_NAMES, SORT_SETTINGS, BLANK_TRIP_POINT };
+export { OFFER_TYPES, TRIP_TYPES, FILTER_NAMES, SORT_SETTINGS, BLANK_TRIP_POINT, NO_TRIP_MESSAGES };
