@@ -1,5 +1,5 @@
-export const OFFER_TYPES = {
-  taxi: [
+const OFFER_TYPES = {
+  'taxi': [
     {
       title: 'Upgrade to a business class',
       price: 190,
@@ -21,7 +21,7 @@ export const OFFER_TYPES = {
       price: 110,
     },
   ],
-  bus: [
+  'bus': [
     {
       title: 'Infotainment system',
       price: 50,
@@ -35,7 +35,7 @@ export const OFFER_TYPES = {
       price: 190,
     },
   ],
-  train: [
+  'train': [
     {
       title: 'Book a taxi at the arrival point',
       price: 110,
@@ -49,7 +49,7 @@ export const OFFER_TYPES = {
       price: 140,
     },
   ],
-  ship: [
+  'ship': [
     {
       title: 'Choose meal',
       price: 130,
@@ -71,7 +71,7 @@ export const OFFER_TYPES = {
       price: 40,
     },
   ],
-  drive: [
+  'drive': [
     {
       title: 'Choose comfort class',
       price: 110,
@@ -81,7 +81,7 @@ export const OFFER_TYPES = {
       price: 180,
     },
   ],
-  flight: [
+  'flight': [
     {
       title: 'Choose meal',
       price: 120,
@@ -125,8 +125,8 @@ export const OFFER_TYPES = {
       price: 30,
     },
   ],
-  sightseeing: [],
-  restaurant: [
+  'sightseeing': [],
+  'restaurant': [
     {
       title: 'Choose live music',
       price: 150,
@@ -137,3 +137,69 @@ export const OFFER_TYPES = {
     },
   ],
 };
+const TRIP_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+const FILTER_NAMES = ['everything', 'future', 'past'];
+const SORT_SETTINGS = [
+  {
+    title: 'day',
+    isDisabled: false,
+    isChecked: false,
+  },
+  {
+    title: 'event',
+    isDisabled: true,
+    isChecked: false,
+  },
+  {
+    title: 'time',
+    isDisabled: false,
+    isChecked: false,
+  },
+  {
+    title: 'price',
+    isDisabled: false,
+    isChecked: true,
+  },
+  {
+    title: 'offers',
+    isDisabled: true,
+    isChecked: false,
+  },
+];
+const BLANK_TRIP_POINT = {
+  basePrice: '',
+  dateFrom: new Date(),
+  dateTo: new Date(),
+  type: 'taxi',
+  offers: [
+    {
+      title: 'Upgrade to a business class',
+      price: 190,
+    },
+    {
+      title: 'Choose the radio station',
+      price: 30,
+    },
+    {
+      title: 'Choose temperature',
+      price: 170,
+    },
+    {
+      title: 'Drive quickly, I\'m in a hurry',
+      price: 100,
+    },
+    {
+      title: 'Drive slowly',
+      price: 110,
+    },
+  ],
+  destination: {
+    description: '',
+    name: '',
+    pictures: [],
+  },
+  isFavorite: false,
+  isBlank: true,
+};
+
+export { OFFER_TYPES, TRIP_TYPES, FILTER_NAMES, SORT_SETTINGS, BLANK_TRIP_POINT };

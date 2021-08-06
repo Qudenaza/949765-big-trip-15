@@ -1,21 +1,21 @@
-import { formatDate, calculateDuration } from '../utils.js';
+import { formatDate, calculateDuration, createElement } from '../utils.js';
 
-const createTripPointOffersTemplate = (offers) => {
+const createOffersTemplate = (offers) => {
   if (!offers.length) {
     return '';
   }
 
   return `<ul class="event__selected-offers">
-    ${offers.map((offer) =>
+  ${offers.map((offer) =>
     `<li class="event__offer">
       <span class="event__offer-title">${offer.title}</span>
       &plus; &euro;
       <span class="event__offer-price">${offer.price}</span>
-      </li>`).join('')}
-    </ul>`;
+    </li>`).join('')}
+  </ul>`;
 };
 
-const createTripPointScheduleTemplate = (from, to) => {
+const createScheduleTemplate = (from, to) => {
   const duration = calculateDuration(from, to);
 
   return `<div class="event__schedule">
@@ -28,26 +28,25 @@ const createTripPointScheduleTemplate = (from, to) => {
   </div>`;
 };
 
-export const createTripPointTemplate = (trip) => {
-  const tripPointOffersTemplate = createTripPointOffersTemplate(trip.offers),
-    tripPointSchedulteTemplate = createTripPointScheduleTemplate(trip.dateFrom, trip.dateTo);
-
-  const favoriteClassName = trip.isFavorite ? 'event__favorite-btn event__favorite-btn--active' : 'event__favorite-btn';
+const createTripPointTemplate = (tripPoint) => {
+  const { dateFrom, dateTo, type, destination, basePrice, isFavorite, offers } = tripPoint;
+  const offersTemplate = createOffersTemplate(offers);
+  const scheduleTemplate = createScheduleTemplate(dateFrom, dateTo);
 
   return `<li class="trip-events__item">
     <div class="event">
-      <time class="event__date" datetime="${formatDate(trip.dateFrom, 'YYYY-MM-DD')}">${formatDate(trip.dateFrom, 'MMM DD')}</time>
+      <time class="event__date" datetime="${formatDate(dateFrom, 'YYYY-MM-DD')}">${formatDate(dateFrom, 'MMM DD')}</time>
       <div class="event__type">
-        <img class="event__type-icon" width="42" height="42" src="img/icons/${trip.type}.png" alt="Event type icon">
+        <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${trip.type} to ${trip.destination.name}</h3>
-      ${tripPointSchedulteTemplate}
+      <h3 class="event__title">${type} to ${destination.name}</h3>
+      ${scheduleTemplate}
       <p class="event__price">
-        &euro;&nbsp;<span class="event__price-value">${trip.basePrice}</span>
+        &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
       </p>
       <h4 class="visually-hidden">Offers:</h4>
-      ${tripPointOffersTemplate}
-      <button class="${favoriteClassName}" type="button">
+      ${offersTemplate}
+      <button class="${isFavorite ? 'event__favorite-btn event__favorite-btn--active' : 'event__favorite-btn'}" type="button">
         <span class="visually-hidden">Add to favorite</span>
         <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
           <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
@@ -59,3 +58,26 @@ export const createTripPointTemplate = (trip) => {
     </div>
   </li>`;
 };
+
+export default class TripPoint {
+  constructor(tripPoint) {
+    this._tripPoint = tripPoint;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripPointTemplate(this._tripPoint);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

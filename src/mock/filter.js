@@ -19,5 +19,5 @@ const tripPointsFilters = {
   },
 };
 
-export const generateFilter = (tripPoints, cond) => tripPoints.filter(tripPointsFilters[cond]);
+export const generateFilter = (tripPoints, condition) => tripPoints.filter(tripPointsFilters[condition]);
 
