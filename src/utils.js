@@ -1,5 +1,33 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import { v4 as uuid } from 'uuid';
+
+const RenderPosition = {
+  AFTERBEGIN: 'afterbegin',
+  BEFOREEND: 'beforeend',
+  BEFOREBEGIN: 'beforebegin',
+};
+
+const render = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+    case RenderPosition.BEFOREBEGIN:
+      container.before(element);
+      break;
+  }
+};
+
+const createElement = (template) => {
+  const newElement = document.createElement('div');
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
 
 const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -33,13 +61,10 @@ const humanizeDates = () => {
 
 const formatDate = (date, format) => dayjs(date).format(format);
 
-const isEmptyObject = (obj) => {
-  for (const i in obj) {
-    if (obj[i]) {
-      return false;
-    }
-  }
-  return true;
+const getUniqueID = () => {
+  const id = uuid();
+
+  return id.split('-')[0];
 };
 
-export { getRandomInteger, formatDate, calculateDuration, humanizeDates, isEmptyObject };
+export { RenderPosition, render, createElement, getRandomInteger, formatDate, calculateDuration, humanizeDates, getUniqueID };
