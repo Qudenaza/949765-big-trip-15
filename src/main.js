@@ -2,10 +2,10 @@ import SiteMenuView from './view/site-menu.js';
 import InfoView from './view/info.js';
 import TotalCostView from './view/total-cost.js';
 import FilterView from './view/filter.js';
-import TripTableView from './view/table.js';
+import TripTableView from './view/trip-table.js';
 import NoTripView from './view/no-trip.js';
 import SortView from './view/sort.js';
-import EditView from './view/edit/trip-point-edit.js';
+import TripPointEditView from './view/edit/trip-point-edit.js';
 import TripPointListView from './view/trip-point-list.js';
 import TripPointView from './view/trip-point.js';
 import { generateTripPoint } from './mock/trip.js';
@@ -22,7 +22,7 @@ const tripTableContainer = document.querySelector('.page-main .page-body__contai
 
 const renderTripPoint = (tripPointsListElement, tripPoint) => {
   const tripPointComponent = new TripPointView(tripPoint);
-  const tripPointEditComponent = new EditView(tripPoint);
+  const tripPointEditComponent = new TripPointEditView(tripPoint);
 
   const replacePointToForm = () => {
     tripPointsListElement.replaceChild(tripPointEditComponent.getElement(), tripPointComponent.getElement());

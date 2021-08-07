@@ -13,7 +13,7 @@ const createStatsTemplate = () => `<section class="statistics">
   </div>
 </section>`;
 
-export default class Stats {
+export default class TripStats {
   constructor() {
     this._element = null;
   }

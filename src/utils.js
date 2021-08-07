@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import { v4 as uuid } from 'uuid';
 
 const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
@@ -60,4 +61,10 @@ const humanizeDates = () => {
 
 const formatDate = (date, format) => dayjs(date).format(format);
 
-export { RenderPosition, render, createElement, getRandomInteger, formatDate, calculateDuration, humanizeDates };
+const getUniqueID = () => {
+  const id = uuid();
+
+  return id.split('-')[0];
+};
+
+export { RenderPosition, render, createElement, getRandomInteger, formatDate, calculateDuration, humanizeDates, getUniqueID };

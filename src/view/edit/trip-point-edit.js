@@ -8,7 +8,6 @@ import { createDescriptionTemplate } from './description.js';
 
 const createEditTemplate = (tripData) => {
   const { basePrice, dateFrom, dateTo, type, destination, offers, isFavorite, isBlank } = tripData;
-
   const dateTemplate = createDateTemplate(dateFrom, dateTo);
   const typeListTemplate = createTypeListTemplate(type);
   const destinationTemplate = createDestinationTemplate(type, destination.name);
@@ -49,7 +48,7 @@ const createEditTemplate = (tripData) => {
 </li>`;
 };
 
-export default class TripPoint {
+export default class TripPointEdit {
   constructor(tripData = BLANK_TRIP_POINT) {
     this._tripData = tripData;
     this._element = null;
