@@ -1,4 +1,5 @@
-import { formatDate, calculateDuration, createElement } from '../utils.js';
+import AbstractView from './abstract.js';
+import { formatDate, calculateDuration } from '../utils/date.js';
 
 const createOffersTemplate = (offers) => {
   if (!offers.length) {
@@ -59,25 +60,27 @@ const createTripPointTemplate = (tripPoint) => {
   </li>`;
 };
 
-export default class TripPoint {
+export default class TripPoint extends AbstractView {
   constructor(tripPoint) {
+    super();
+
     this._tripPoint = tripPoint;
-    this._element = null;
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return createTripPointTemplate(this._tripPoint);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _clickHandler() {
+    this._callback.click();
   }
 
-  removeElement() {
-    this._element = null;
+  setClickHandler(callback) {
+    const target = this.getElement().querySelector('.event__rollup-btn');
+
+    this._callback.click = callback;
+
+    target.addEventListener('click', this._clickHandler);
   }
 }

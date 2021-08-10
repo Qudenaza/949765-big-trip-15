@@ -1,5 +1,32 @@
-import { SORT_SETTINGS } from '../const.js';
-import { createElement } from '../utils.js';
+import AbstractView from './abstract.js';
+
+const SORT_SETTINGS = [
+  {
+    title: 'day',
+    isDisabled: false,
+    isChecked: false,
+  },
+  {
+    title: 'event',
+    isDisabled: true,
+    isChecked: false,
+  },
+  {
+    title: 'time',
+    isDisabled: false,
+    isChecked: false,
+  },
+  {
+    title: 'price',
+    isDisabled: false,
+    isChecked: true,
+  },
+  {
+    title: 'offers',
+    isDisabled: true,
+    isChecked: false,
+  },
+];
 
 const createSortItem = (sortSettings) => {
   const { title, isDisabled, isChecked } = sortSettings;
@@ -16,24 +43,8 @@ const createSortTemplate = () => {
   return `<form class="trip-events__trip-sort trip-sort" action="#" method="get">${sortItemsTemplate}</form>`;
 };
 
-export default class Sort {
-  constructor() {
-    this._element = null;
-  }
-
+export default class Sort extends AbstractView {
   getTemplate() {
     return createSortTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
