@@ -1,5 +1,6 @@
-import { FILTER_NAMES } from '../const.js';
-import { createElement } from '../utils.js';
+import AbstractView from './abstract.js';
+
+const FILTER_NAMES = ['everything', 'future', 'past'];
 
 const createFilterItemTemplate = (filterName) => `<div class="trip-filters__filter">
   <input id="filter-${filterName}" class="trip-filters__filter-input visually-hidden" type="radio" name="trip-filter" value="${filterName}" ${filterName === 'everything' ? 'checked' : ''}>
@@ -15,24 +16,8 @@ const createFilterTemplate = () => {
   </form>`;
 };
 
-export default class Filter {
-  constructor() {
-    this._element = null;
-  }
-
+export default class Filter extends AbstractView {
   getTemplate() {
     return createFilterTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

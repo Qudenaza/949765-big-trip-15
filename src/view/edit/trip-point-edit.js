@@ -1,4 +1,4 @@
-import { createElement } from '../../utils.js';
+import AbstractView from '../abstract.js';
 import { BLANK_TRIP_POINT } from '../../const.js';
 import { createDateTemplate } from './date.js';
 import { createTypeListTemplate } from './type-list.js';
@@ -48,25 +48,42 @@ const createEditTemplate = (tripData) => {
 </li>`;
 };
 
-export default class TripPointEdit {
+export default class TripPointEdit extends AbstractView {
   constructor(tripData = BLANK_TRIP_POINT) {
+    super();
+
     this._tripData = tripData;
-    this._element = null;
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return createEditTemplate(this._tripData);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
 
-    return this._element;
+    this._callback.formSubmit();
   }
 
-  removeElement() {
-    this._element = null;
+  _clickHandler() {
+    this._callback.click();
+  }
+
+  setFormSubmitHandler(callback) {
+    const target = this.getElement().querySelector('form');
+
+    this._callback.formSubmit = callback;
+
+    target.addEventListener('submit', this._formSubmitHandler);
+  }
+
+  setClickHandler(callback) {
+    const target = this.getElement().querySelector('form .event__rollup-btn');
+
+    this._callback.click = callback;
+
+    target.addEventListener('click', this._clickHandler);
   }
 }

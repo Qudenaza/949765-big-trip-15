@@ -1,4 +1,4 @@
-import { formatDate } from '../../utils.js';
+import { formatDate } from '../../utils/date.js';
 
 export const createDateTemplate = (from, to) => {
   const dateFromFormated = formatDate(from, 'DD/MM/YY HH:mm'),

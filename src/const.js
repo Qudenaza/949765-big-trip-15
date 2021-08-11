@@ -1,4 +1,4 @@
-import { getUniqueID } from './utils.js';
+import { getUniqueID } from './utils/common.js';
 
 const OFFER_TYPES = {
   'taxi': [
@@ -170,34 +170,7 @@ const OFFER_TYPES = {
   ],
 };
 const TRIP_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
-const FILTER_NAMES = ['everything', 'future', 'past'];
-const SORT_SETTINGS = [
-  {
-    title: 'day',
-    isDisabled: false,
-    isChecked: false,
-  },
-  {
-    title: 'event',
-    isDisabled: true,
-    isChecked: false,
-  },
-  {
-    title: 'time',
-    isDisabled: false,
-    isChecked: false,
-  },
-  {
-    title: 'price',
-    isDisabled: false,
-    isChecked: true,
-  },
-  {
-    title: 'offers',
-    isDisabled: true,
-    isChecked: false,
-  },
-];
+
 const BLANK_TRIP_POINT = {
   basePrice: '',
   dateFrom: new Date(),
@@ -233,10 +206,5 @@ const BLANK_TRIP_POINT = {
   isFavorite: false,
   isBlank: true,
 };
-const NO_TRIP_MESSAGES = {
-  'everything': 'Click New Event to create your first point',
-  'future': 'There are no future events now',
-  'past': 'There are no past events now',
-};
 
-export { OFFER_TYPES, TRIP_TYPES, FILTER_NAMES, SORT_SETTINGS, BLANK_TRIP_POINT, NO_TRIP_MESSAGES };
+export { OFFER_TYPES, TRIP_TYPES, BLANK_TRIP_POINT };

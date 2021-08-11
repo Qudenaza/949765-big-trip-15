@@ -1,22 +1,11 @@
-import { getRandomInteger, humanizeDates } from '../utils.js';
-import { OFFER_TYPES } from '../const.js';
+import { humanizeDates } from '../utils/date.js';
+import { getRandomInteger } from '../utils/common.js';
+import { OFFER_TYPES, TRIP_TYPES } from '../const.js';
 
 const generateType = () => {
-  const types = [
-    'taxi',
-    'bus',
-    'train',
-    'ship',
-    'drive',
-    'flight',
-    'check-in',
-    'sightseeing',
-    'restaurant',
-  ];
+  const randomIndex = getRandomInteger(0, TRIP_TYPES.length - 1);
 
-  const randomIndex = getRandomInteger(0, types.length - 1);
-
-  return types[randomIndex];
+  return TRIP_TYPES[randomIndex];
 };
 
 const generateCity = () => {

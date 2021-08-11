@@ -9,7 +9,7 @@ import TripPointEditView from './view/edit/trip-point-edit.js';
 import TripPointListView from './view/trip-point-list.js';
 import TripPointView from './view/trip-point.js';
 import { generateTripPoint } from './mock/trip.js';
-import { render, RenderPosition } from './utils.js';
+import { render, RenderPosition, replace } from './utils/render.js';
 
 const TRIP_POINTS_COUNT = 16;
 
@@ -25,11 +25,11 @@ const renderTripPoint = (tripPointsListElement, tripPoint) => {
   const tripPointEditComponent = new TripPointEditView(tripPoint);
 
   const replacePointToForm = () => {
-    tripPointsListElement.replaceChild(tripPointEditComponent.getElement(), tripPointComponent.getElement());
+    replace(tripPointEditComponent, tripPointComponent);
   };
 
   const replaceFormToPoint = () => {
-    tripPointsListElement.replaceChild(tripPointComponent.getElement(),  tripPointEditComponent.getElement());
+    replace(tripPointComponent,  tripPointEditComponent);
   };
 
   const onEscKeyDown = (evt) => {
@@ -42,27 +42,25 @@ const renderTripPoint = (tripPointsListElement, tripPoint) => {
     }
   };
 
-  tripPointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  tripPointComponent.setClickHandler(() => {
     replacePointToForm();
 
     document.addEventListener('keydown', onEscKeyDown);
   });
 
-  tripPointEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
-    evt.preventDefault();
-
+  tripPointEditComponent.setFormSubmitHandler(() => {
     replaceFormToPoint();
 
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  tripPointEditComponent.getElement().querySelector('form .event__rollup-btn').addEventListener('click', () => {
+  tripPointEditComponent.setClickHandler(() => {
     replaceFormToPoint();
 
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  render(tripPointsListElement, tripPointComponent.getElement(), RenderPosition.BEFOREEND);
+  render(tripPointsListElement, tripPointComponent, RenderPosition.BEFOREEND);
 };
 
 const renderTripTable = (container, events) => {
@@ -70,29 +68,29 @@ const renderTripTable = (container, events) => {
   const tripPointListComponent = new TripPointListView();
   const sortComponent = new SortView();
 
-  render(container, tripTableComponent.getElement(), RenderPosition.BEFOREEND);
+  render(container, tripTableComponent, RenderPosition.BEFOREEND);
 
   if (!events.length) {
     const noTripContainer = document.querySelector('.trip-events');
     const chosenFilter = document.querySelector('.trip-filters input[checked]').value;
 
-    render(noTripContainer, new NoTripView(chosenFilter).getElement(), RenderPosition.BEFOREEND);
+    render(noTripContainer, new NoTripView(chosenFilter), RenderPosition.BEFOREEND);
 
     return;
   }
 
-  render(container, sortComponent.getElement(), RenderPosition.BEFOREEND);
-  render(container, tripPointListComponent.getElement(), RenderPosition.BEFOREEND);
+  render(container, sortComponent, RenderPosition.BEFOREEND);
+  render(container, tripPointListComponent, RenderPosition.BEFOREEND);
 
   const tripPointsListElement = document.querySelector('.trip-events__list');
 
   tripPoints.forEach((point) => renderTripPoint(tripPointsListElement, point));
 };
 
-render(siteMenuContainer, new SiteMenuView().getElement(), RenderPosition.BEFOREEND);
-render(tripFiltersContainer, new FilterView().getElement(), RenderPosition.BEFOREEND);
-render(tripInfoContainer, new InfoView().getElement(), RenderPosition.BEFOREEND);
-render(tripInfoContainer, new TotalCostView(tripPoints).getElement(), RenderPosition.BEFOREEND);
+render(siteMenuContainer, new SiteMenuView(), RenderPosition.BEFOREEND);
+render(tripFiltersContainer, new FilterView(), RenderPosition.BEFOREEND);
+render(tripInfoContainer, new InfoView(), RenderPosition.BEFOREEND);
+render(tripInfoContainer, new TotalCostView(tripPoints), RenderPosition.BEFOREEND);
 
 renderTripTable(tripTableContainer, tripPoints);
 
