@@ -1,7 +1,7 @@
 import AbstractView from './abstract.js';
 
-const createTotalCostTemplate = (tripPoints = []) => {
-  const totalCost = tripPoints.reduce((sum, current) => current.basePrice ? sum + current.basePrice : 0, 0);
+const createTotalCostTemplate = (routePoints = []) => {
+  const totalCost = routePoints.reduce((sum, current) => current.basePrice ? sum + current.basePrice : 0, 0);
 
   return `<p class="trip-info__cost">
     Total: &euro;&nbsp;<span class="trip-info__cost-value">${totalCost}</span>
@@ -9,13 +9,13 @@ const createTotalCostTemplate = (tripPoints = []) => {
 };
 
 export default class TotalCost extends AbstractView {
-  constructor(tripPoints) {
+  constructor(routePoints) {
     super();
 
-    this._tripPoints = tripPoints;
+    this._routePoints = routePoints;
   }
 
   getTemplate() {
-    return createTotalCostTemplate(this._tripPoints);
+    return createTotalCostTemplate(this._routePoints);
   }
 }

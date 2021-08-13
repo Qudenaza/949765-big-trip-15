@@ -1,23 +1,23 @@
-const tripPointsFilters = {
-  every: (tripPoint) => {
-    const { dateFrom, dateTo } = tripPoint,
+const routeFilters = {
+  everything: (routePoint) => {
+    const { dateFrom, dateTo } = routePoint,
       dateNow = +new Date();
 
     return +new Date(dateFrom) < dateNow && dateNow < +new Date(dateTo);
   },
-  future: (tripPoint) => {
-    const { dateFrom } = tripPoint,
+  future: (routePoint) => {
+    const { dateFrom } = routePoint,
       dateNow = +new Date();
 
     return +new Date(dateFrom) > dateNow;
   },
-  past: (tripPoint) => {
-    const { dateTo } = tripPoint,
+  past: (routePoint) => {
+    const { dateTo } = routePoint,
       dateNow = +new Date();
 
     return +new Date(dateTo) < dateNow;
   },
 };
 
-export const generateFilter = (tripPoints, condition) => tripPoints.filter(tripPointsFilters[condition]);
+export const generateFilter = (routePoints, condition) => routePoints.filter(routeFilters[condition]);
 

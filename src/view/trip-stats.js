@@ -13,7 +13,7 @@ const createStatsTemplate = () => `<section class="statistics">
   </div>
 </section>`;
 
-export default class TripStats extends AbstractView {
+export default class RouteStats extends AbstractView {
   getTemplate() {
     return createStatsTemplate();
   }

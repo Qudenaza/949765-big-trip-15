@@ -1,4 +1,4 @@
-import { TRIP_TYPES } from '../../const.js';
+import { EVENT_TYPES } from '../../const.js';
 
 const createTypeItemTemplate = (type) => `<div class="event__type-item">
   <input id="event-type-${type}-1" class="event__type-input visually-hidden" type="radio" name="event-type" value="${type}" ${type === 'taxi' ? 'checked' : ''}>
@@ -6,7 +6,7 @@ const createTypeItemTemplate = (type) => `<div class="event__type-item">
 </div>`;
 
 export const createTypeListTemplate = (type) => {
-  const typeItemsTemplate = TRIP_TYPES.slice(0).map((typeTitle) => createTypeItemTemplate(typeTitle)).join('');
+  const typeItemsTemplate = EVENT_TYPES.slice(0).map((typeTitle) => createTypeItemTemplate(typeTitle)).join('');
 
   return `<div class="event__type-wrapper">
     <label class="event__type event__type-btn" for="event-type-toggle-1">

@@ -1,13 +1,13 @@
 import AbstractView from '../abstract.js';
-import { BLANK_TRIP_POINT } from '../../const.js';
+import { BLANK_ROUTE_POINT } from '../../const.js';
 import { createDateTemplate } from './date.js';
 import { createTypeListTemplate } from './type-list.js';
 import { createDestinationTemplate } from './destination.js';
 import { createOffersTemplate } from './offers.js';
 import { createDescriptionTemplate } from './description.js';
 
-const createEditTemplate = (tripData) => {
-  const { basePrice, dateFrom, dateTo, type, destination, offers, isFavorite, isBlank } = tripData;
+const createEditTemplate = (routeData) => {
+  const { basePrice, dateFrom, dateTo, type, destination, offers, isFavorite, isBlank } = routeData;
   const dateTemplate = createDateTemplate(dateFrom, dateTo);
   const typeListTemplate = createTypeListTemplate(type);
   const destinationTemplate = createDestinationTemplate(type, destination.name);
@@ -48,35 +48,36 @@ const createEditTemplate = (tripData) => {
 </li>`;
 };
 
-export default class TripPointEdit extends AbstractView {
-  constructor(tripData = BLANK_TRIP_POINT) {
+export default class RoutePointEdit extends AbstractView {
+  constructor(routePoint = BLANK_ROUTE_POINT) {
     super();
 
-    this._tripData = tripData;
-    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._routePoint = routePoint;
+
+    this._submitHandler = this._submitHandler.bind(this);
     this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
-    return createEditTemplate(this._tripData);
+    return createEditTemplate(this._routePoint);
   }
 
-  _formSubmitHandler(evt) {
+  _submitHandler(evt) {
     evt.preventDefault();
 
-    this._callback.formSubmit();
+    this._callback.submit(this._routePoint);
   }
 
   _clickHandler() {
     this._callback.click();
   }
 
-  setFormSubmitHandler(callback) {
+  setSubmitHandler(callback) {
     const target = this.getElement().querySelector('form');
 
-    this._callback.formSubmit = callback;
+    this._callback.submit = callback;
 
-    target.addEventListener('submit', this._formSubmitHandler);
+    target.addEventListener('submit', this._submitHandler);
   }
 
   setClickHandler(callback) {

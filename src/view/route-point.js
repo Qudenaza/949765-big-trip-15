@@ -29,8 +29,8 @@ const createScheduleTemplate = (from, to) => {
   </div>`;
 };
 
-const createTripPointTemplate = (tripPoint) => {
-  const { dateFrom, dateTo, type, destination, basePrice, isFavorite, offers } = tripPoint;
+const createRoutePointTemplate = (routePoint) => {
+  const { dateFrom, dateTo, type, destination, basePrice, isFavorite, offers } = routePoint;
   const offersTemplate = createOffersTemplate(offers);
   const scheduleTemplate = createScheduleTemplate(dateFrom, dateTo);
 
@@ -60,20 +60,27 @@ const createTripPointTemplate = (tripPoint) => {
   </li>`;
 };
 
-export default class TripPoint extends AbstractView {
-  constructor(tripPoint) {
+export default class RoutePoint extends AbstractView {
+  constructor(routePoint) {
     super();
 
-    this._tripPoint = tripPoint;
+    this._routePoint = routePoint;
     this._clickHandler = this._clickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createTripPointTemplate(this._tripPoint);
+    return createRoutePointTemplate(this._routePoint);
   }
 
   _clickHandler() {
     this._callback.click();
+  }
+
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+
+    this._callback.favoriteClick();
   }
 
   setClickHandler(callback) {
@@ -82,5 +89,13 @@ export default class TripPoint extends AbstractView {
     this._callback.click = callback;
 
     target.addEventListener('click', this._clickHandler);
+  }
+
+  setFavoriteClickHandler(callback) {
+    const target = this.getElement().querySelector('.event__favorite-btn');
+
+    this._callback.favoriteClick = callback;
+
+    target.addEventListener('click', this._favoriteClickHandler);
   }
 }

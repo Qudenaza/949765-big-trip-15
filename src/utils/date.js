@@ -19,7 +19,7 @@ const calculateDuration = (from, to) => {
 const humanizeDates = () => {
   dayjs.extend(utc);
 
-  const dateFrom = dayjs.utc().add(getRandomInteger(1, 100), 'days').format();
+  const dateFrom = dayjs.utc().add(getRandomInteger(1, 100), 'days').add(getRandomInteger(2, 24), 'hours').add(getRandomInteger(1, 60), 'minutes').format();
   const dateTo = dayjs.utc(dateFrom).add(getRandomInteger(0, 20), 'days').add(getRandomInteger(2, 24), 'hours').add(getRandomInteger(1, 60), 'minutes').format();
 
   return [dateFrom, dateTo];

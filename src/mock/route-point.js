@@ -1,11 +1,11 @@
 import { humanizeDates } from '../utils/date.js';
 import { getRandomInteger } from '../utils/common.js';
-import { OFFER_TYPES, TRIP_TYPES } from '../const.js';
+import { OFFER_TYPES, EVENT_TYPES } from '../const.js';
 
 const generateType = () => {
-  const randomIndex = getRandomInteger(0, TRIP_TYPES.length - 1);
+  const randomIndex = getRandomInteger(0, EVENT_TYPES.length - 1);
 
-  return TRIP_TYPES[randomIndex];
+  return EVENT_TYPES[randomIndex];
 };
 
 const generateCity = () => {
@@ -53,7 +53,7 @@ const generatePictures = () => (new Array(getRandomInteger(1, 5)).fill().map(() 
   'description': 'Beautiful place in beautiful city',
 })));
 
-export const generateTripPoint = () => {
+const generateRoutePoint = () => {
   const destination = {
     description: generateDescription(),
     name: generateCity(),
@@ -68,11 +68,13 @@ export const generateTripPoint = () => {
     dateFrom: dates[0],
     dateTo: dates[1],
     destination,
-    id: `${getRandomInteger(0, 100)}`,
+    id: `${getRandomInteger(0, 1000)}`,
     isFavorite: !!getRandomInteger(0, 1),
     offers: OFFER_TYPES[type],
     type,
   };
 };
+
+export { generateRoutePoint };
 
 
