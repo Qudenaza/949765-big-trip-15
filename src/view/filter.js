@@ -21,3 +21,4 @@ export default class Filter extends AbstractView {
     return createFilterTemplate();
   }
 }
+

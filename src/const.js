@@ -169,9 +169,9 @@ const OFFER_TYPES = {
     },
   ],
 };
-const TRIP_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+const EVENT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
-const BLANK_TRIP_POINT = {
+const BLANK_ROUTE_POINT = {
   basePrice: '',
   dateFrom: new Date(),
   dateTo: new Date(),
@@ -207,4 +207,4 @@ const BLANK_TRIP_POINT = {
   isBlank: true,
 };
 
-export { OFFER_TYPES, TRIP_TYPES, BLANK_TRIP_POINT };
+export { OFFER_TYPES, EVENT_TYPES, BLANK_ROUTE_POINT };

@@ -1,11 +1,11 @@
-const tripPointsSort = {
-  price: (firstTripPoint, secondTripPoint) => secondTripPoint.basePrice - firstTripPoint.basePrice,
-  time: (firstTripPoint, secondTripPoint) => {
-    const firstTripPointDuration = new Date(firstTripPoint.dateTo) - new Date(firstTripPoint.dateFrom),
-      secondTripPointDuration = new Date(secondTripPoint.dateTo) - new Date(secondTripPoint.dateFrom);
+const routeSort = {
+  price: (firstRoutePoint, secondRoutePoint) => secondRoutePoint.basePrice - firstRoutePoint.basePrice,
+  time: (firstRoutePoint, secondRoutePoint) => {
+    const firstRoutePointDuration = new Date(firstRoutePoint.dateTo) - new Date(firstRoutePoint.dateFrom),
+      secondRoutePointDuration = new Date(secondRoutePoint.dateTo) - new Date(secondRoutePoint.dateFrom);
 
-    return secondTripPointDuration - firstTripPointDuration;
+    return secondRoutePointDuration - firstRoutePointDuration;
   },
 };
 
-export const generateSort = (tripPoints, cond) => tripPoints.sort(tripPointsSort[cond]);
+export const generateSort = (routePoints, cond) => routePoints.sort(routeSort[cond]);
