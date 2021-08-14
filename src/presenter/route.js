@@ -5,11 +5,13 @@ import RoutePointListView from '../view/route-point-list.js';
 import RoutePointPresenter from './route-point.js';
 import { render, RenderPosition, replace } from '../utils/render.js';
 import { updateItem } from '../utils/common.js';
+import { generateSort } from '../mock/sort.js';
 
 export default class Route {
   constructor(container) {
     this._routeContainer = container;
     this._routePresenter = new Map();
+    this._currentSortType = 'day';
 
     this._routeComponent = new RouteView();
     this._noRouteComponent = new NoRouteView('everything');
@@ -18,12 +20,17 @@ export default class Route {
 
     this._handleRoutePointChange = this._handleRoutePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(routePoints) {
     this._routePoints = routePoints;
 
+    this._sourcedRoutePoints = routePoints.slice();
+
     render(this._routeContainer, this._routeComponent, RenderPosition.BEFOREEND);
+
+    generateSort(this._routePoints, this._currentSortType);
 
     this._renderRoute();
   }
@@ -42,11 +49,43 @@ export default class Route {
     }
 
     this._renderSort();
-    this._renderRoutePoints();
   }
 
   _renderSort() {
     render(this._routePointListComponent, this._sortComponent, RenderPosition.BEFOREBEGIN);
+
+    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+  }
+
+  _handleSortTypeChange(data) {
+    const sortBy = data.split('-')[1];
+
+    if (this._currentSortType === sortBy) {
+      return;
+    }
+
+    this._sortRoutePoints(sortBy);
+
+    this._clearRoutePointList();
+    this._renderRoutePointList();
+  }
+
+  _sortRoutePoints(sortBy) {
+    switch (sortBy) {
+      case 'price':
+        generateSort(this._routePoints, 'price');
+        break;
+      case 'time':
+        generateSort(this._routePoints, 'time');
+        break;
+      case 'day':
+        generateSort(this._routePoints, 'day');
+        break;
+      default:
+        this._routePoints = this._sourcedRoutePoints.slice();
+    }
+
+    this._currentSortType = sortBy;
   }
 
   _renderRoutePoint(point) {
@@ -69,6 +108,8 @@ export default class Route {
 
   _renderRoutePointList() {
     render(this._routeComponent, this._routePointListComponent, RenderPosition.BEFOREEND);
+
+    this._renderRoutePoints();
   }
 
   _clearRoutePointList() {
