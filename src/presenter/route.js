@@ -4,7 +4,7 @@ import SortView from '../view/sort.js';
 import RoutePointListView from '../view/route-point-list.js';
 import RoutePointPresenter from './route-point.js';
 import { render, RenderPosition, replace } from '../utils/render.js';
-import { updateItem } from '../utils/common.js';
+import { updateItem, removeItem } from '../utils/common.js';
 import { generateSort } from '../mock/sort.js';
 
 export default class Route {
@@ -19,6 +19,7 @@ export default class Route {
     this._routePointListComponent = new RoutePointListView();
 
     this._handleRoutePointChange = this._handleRoutePointChange.bind(this);
+    this._handleRoutePointRemove = this._handleRoutePointRemove.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
@@ -89,7 +90,7 @@ export default class Route {
   }
 
   _renderRoutePoint(point) {
-    const routePointPresenter = new RoutePointPresenter(this._routePointListComponent, this._handleRoutePointChange, this._handleModeChange);
+    const routePointPresenter = new RoutePointPresenter(this._routePointListComponent, this._handleRoutePointChange, this._handleRoutePointRemove, this._handleModeChange);
 
     routePointPresenter.init(point);
 
@@ -100,6 +101,14 @@ export default class Route {
     this._routePoints = updateItem(this._routePoints, updatedPoint);
 
     this._routePresenter.get(updatedPoint.id).init(updatedPoint);
+  }
+
+  _handleRoutePointRemove(removedPoint) {
+    this._routePoints = removeItem(this._routePoints, removedPoint);
+
+    this._routePresenter.get(removedPoint.id).destroy();
+
+    this._routePresenter.delete(removedPoint.id);
   }
 
   _renderRoutePoints() {
