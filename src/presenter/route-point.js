@@ -8,15 +8,17 @@ const Mode = {
 };
 
 export default class RoutePoint {
-  constructor(container, changeData, changeMode) {
+  constructor(container, changeData, removeData, changeMode) {
     this._routePointContainer = container;
     this._changeData = changeData;
+    this._removeData = removeData;
     this._changeMode = changeMode;
 
     this._routePointComponent = null;
     this._routePointEditComponent = null;
     this._mode = Mode.DEFAULT;
 
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleEditOpenClick = this._handleEditOpenClick.bind(this);
     this._handleEditCloseClick = this._handleEditCloseClick.bind(this);
@@ -36,6 +38,7 @@ export default class RoutePoint {
     this._routePointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._routePointComponent.setClickHandler(this._handleEditOpenClick);
     this._routePointEditComponent.setClickHandler(this._handleEditCloseClick);
+    this._routePointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
     this._routePointEditComponent.setSubmitHandler(this._handleFormSubmitClick);
 
     if (prevRoutePointComponent === null || prevRoutePointEditComponent === null) {
@@ -85,6 +88,12 @@ export default class RoutePoint {
     this._mode = Mode.DEFAULT;
   }
 
+  _handleDeleteClick() {
+    this._replaceFormToPoint();
+
+    this._removeData(this._point);
+  }
+
   _handleFavoriteClick() {
     this._changeData(
       Object.assign(
@@ -115,8 +124,8 @@ export default class RoutePoint {
     this._replaceFormToPoint();
   }
 
-  _handleFormSubmitClick(point) {
-    this._changeData(point);
+  _handleFormSubmitClick() {
+    this._changeData(this._point);
 
     this._replaceFormToPoint();
   }

@@ -1,10 +1,11 @@
-import AbstractView from '../abstract.js';
-import { BLANK_ROUTE_POINT } from '../../const.js';
+import SmartView from '../smart.js';
+import { BLANK_ROUTE_POINT, OFFER_TYPES } from '../../const.js';
 import { createDateTemplate } from './date.js';
 import { createTypeListTemplate } from './type-list.js';
 import { createDestinationTemplate } from './destination.js';
 import { createOffersTemplate } from './offers.js';
 import { createDescriptionTemplate } from './description.js';
+import { generateDescription, generatePictures } from '../../mock/route-point.js';
 
 const createEditTemplate = (routeData) => {
   const { basePrice, dateFrom, dateTo, type, destination, offers, isFavorite, isBlank } = routeData;
@@ -39,7 +40,7 @@ const createEditTemplate = (routeData) => {
         <span class="visually-hidden">Close event</span>
       </button>` : ''}
     </header>
-    ${dateTemplate || descriptionTemplate ?
+    ${offersTemplate || descriptionTemplate ?
     `<section class="event__details">
       ${offersTemplate}
       ${descriptionTemplate}
@@ -48,7 +49,7 @@ const createEditTemplate = (routeData) => {
 </li>`;
 };
 
-export default class RoutePointEdit extends AbstractView {
+export default class RoutePointEdit extends SmartView {
   constructor(routePoint = BLANK_ROUTE_POINT) {
     super();
 
@@ -56,6 +57,11 @@ export default class RoutePointEdit extends AbstractView {
 
     this._submitHandler = this._submitHandler.bind(this);
     this._clickHandler = this._clickHandler.bind(this);
+    this._deleteClickHandler = this._deleteClickHandler.bind(this);
+    this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
+    this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+
+    this._setInnerHandlers();
   }
 
   getTemplate() {
@@ -72,6 +78,10 @@ export default class RoutePointEdit extends AbstractView {
     this._callback.click();
   }
 
+  _deleteClickHandler() {
+    this._callback.deleteClick();
+  }
+
   setSubmitHandler(callback) {
     const target = this.getElement().querySelector('form');
 
@@ -86,5 +96,63 @@ export default class RoutePointEdit extends AbstractView {
     this._callback.click = callback;
 
     target.addEventListener('click', this._clickHandler);
+  }
+
+  setDeleteClickHandler(callback) {
+    const target = this.getElement().querySelector('.event__reset-btn');
+
+    this._callback.deleteClick = callback;
+
+    target.addEventListener('click', this._deleteClickHandler);
+  }
+
+  _eventTypeChangeHandler(evt) {
+    if (evt.target.classList.contains('event__type-toggle')) {
+      return;
+    }
+
+    this.updateData({
+      type: evt.target.value,
+      offers: OFFER_TYPES[evt.target.value],
+    });
+  }
+
+  _destinationChangeHandler(evt) {
+    const value = evt.target.value;
+
+    if (!evt.target.value) {
+      this.updateData({
+        destination: {
+          description: '',
+          name: value,
+          pictures: [],
+        },
+      });
+
+      return;
+    }
+
+    this.updateData({
+      destination: {
+        description: generateDescription(),
+        name: value,
+        pictures: generatePictures(),
+      },
+    });
+  }
+
+  _setInnerHandlers() {
+    this.getElement().querySelector('.event__type-group').addEventListener('change', this._eventTypeChangeHandler);
+    this.getElement().querySelector('.event__input--destination').addEventListener('change', this._destinationChangeHandler);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+
+    this.setSubmitHandler(this._callback.submit);
+
+    this.setDeleteClickHandler(this._callback.deleteClick);
+
+    this.setClickHandler(this._callback.click);
   }
 }

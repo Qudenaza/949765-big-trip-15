@@ -19,13 +19,25 @@ const updateItem = (items, update) => {
   if (index === -1) {
     return items;
   }
-  const arr = [
+
+  return [
     ...items.slice(0, index),
     update,
     ...items.slice(index + 1),
   ];
-
-  return arr;
 };
 
-export { getRandomInteger, getUniqueID, updateItem };
+const removeItem = (items, remove) => {
+  const index = items.findIndex((item) => item.id === remove.id);
+
+  if (index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.slice(0, index),
+    ...items.slice(index + 1),
+  ];
+};
+
+export { getRandomInteger, getUniqueID, updateItem, removeItem };
