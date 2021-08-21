@@ -27,17 +27,17 @@ export default class RoutePoint {
   }
 
   init(point) {
-    this._point = point;
+    this._routePoint = point;
 
     const prevRoutePointComponent = this._routePointComponent;
     const prevRoutePointEditComponent = this._routePointEditComponent;
 
-    this._routePointComponent = new RoutePointView(this._point);
-    this._routePointEditComponent = new RoutePointEditView(this._point);
+    this._routePointComponent = new RoutePointView(this._routePoint);
+    this._routePointEditComponent = new RoutePointEditView(this._routePoint);
 
     this._routePointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
-    this._routePointComponent.setClickHandler(this._handleEditOpenClick);
-    this._routePointEditComponent.setClickHandler(this._handleEditCloseClick);
+    this._routePointComponent.setOpenClickHandler(this._handleEditOpenClick);
+    this._routePointEditComponent.setCloseClickHandler(this._handleEditCloseClick);
     this._routePointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
     this._routePointEditComponent.setSubmitHandler(this._handleFormSubmitClick);
 
@@ -91,16 +91,16 @@ export default class RoutePoint {
   _handleDeleteClick() {
     this._replaceFormToPoint();
 
-    this._removeData(this._point);
+    this._removeData(this._routePoint);
   }
 
   _handleFavoriteClick() {
     this._changeData(
       Object.assign(
         {},
-        this._point,
+        this._routePoint,
         {
-          isFavorite: !this._point.isFavorite,
+          isFavorite: !this._routePoint.isFavorite,
         },
       ),
     );
@@ -109,6 +109,8 @@ export default class RoutePoint {
   _escKeyDownHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
+
+      this._routePointEditComponent.reset(this._routePoint);
 
       this._replaceFormToPoint();
 
@@ -121,11 +123,13 @@ export default class RoutePoint {
   }
 
   _handleEditCloseClick() {
+    this._routePointEditComponent.reset(this._routePoint);
+
     this._replaceFormToPoint();
   }
 
   _handleFormSubmitClick() {
-    this._changeData(this._point);
+    this._changeData(this._routePoint);
 
     this._replaceFormToPoint();
   }

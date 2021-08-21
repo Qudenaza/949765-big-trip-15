@@ -4,7 +4,7 @@ export default class Smart extends Abstract {
   constructor() {
     super();
 
-    this._routePoint = {};
+    this._data = {};
   }
 
   updateData(update) {
@@ -12,9 +12,9 @@ export default class Smart extends Abstract {
       return;
     }
 
-    this._routePoint = Object.assign(
+    this._data = Object.assign(
       {},
-      this._routePoint,
+      this._data,
       update,
     );
 
