@@ -25,6 +25,12 @@ const humanizeDates = () => {
   return [dateFrom, dateTo];
 };
 
-const formatDate = (date, format) => dayjs(date).format(format);
+const formatDate = (date, format, utcMode = false) => {
+  if (!utcMode) {
+    return dayjs(date).format(format);
+  }
+
+  return dayjs.utc(date).format();
+};
 
 export { formatDate, calculateDuration, humanizeDates };

@@ -6,6 +6,10 @@ import { createDestinationTemplate } from './destination.js';
 import { createOffersTemplate } from './offers.js';
 import { createDescriptionTemplate } from './description.js';
 import { generateDescription, generatePictures } from '../../mock/route-point.js';
+import flatpickr from 'flatpickr';
+import { formatDate } from '../../utils/date.js';
+
+import '../../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const createEditTemplate = (routeData) => {
   const { basePrice, dateFrom, dateTo, type, destination, offers, isFavorite, isBlank } = routeData;
@@ -53,29 +57,60 @@ export default class RoutePointEdit extends SmartView {
   constructor(routePoint = BLANK_ROUTE_POINT) {
     super();
 
-    this._routePoint = routePoint;
+    this._data = routePoint;
+    this._datepicker = null;
 
     this._submitHandler = this._submitHandler.bind(this);
-    this._clickHandler = this._clickHandler.bind(this);
+    this._closeClickHandler = this._closeClickHandler.bind(this);
     this._deleteClickHandler = this._deleteClickHandler.bind(this);
     this._eventTypeChangeHandler = this._eventTypeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+    this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
+    this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
 
     this._setInnerHandlers();
+    this._setDatepicker();
+  }
+
+  _setDatepicker() {
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+
+    this._datepicker = flatpickr(this.getElement().querySelector('#event-start-time-1'),
+      {
+        dateFormat: 'd/m/y H:m',
+        defaultDate: this._data.dateFrom,
+        onChange: this._dateFromChangeHandler,
+      },
+    );
+
+    this._datepicker = flatpickr(this.getElement().querySelector('#event-end-time-1'),
+      {
+        dateFormat: 'd/m/y H:m',
+        defaultDate: this._data.dateTo,
+        onChange: this._dateToChangeHandler,
+      },
+    );
+  }
+
+  reset(routePoint) {
+    this.updateData(routePoint);
   }
 
   getTemplate() {
-    return createEditTemplate(this._routePoint);
+    return createEditTemplate(this._data);
   }
 
   _submitHandler(evt) {
     evt.preventDefault();
 
-    this._callback.submit(this._routePoint);
+    this._callback.submit(this._data);
   }
 
-  _clickHandler() {
-    this._callback.click();
+  _closeClickHandler() {
+    this._callback.closeClick();
   }
 
   _deleteClickHandler() {
@@ -90,12 +125,12 @@ export default class RoutePointEdit extends SmartView {
     target.addEventListener('submit', this._submitHandler);
   }
 
-  setClickHandler(callback) {
+  setCloseClickHandler(callback) {
     const target = this.getElement().querySelector('form .event__rollup-btn');
 
-    this._callback.click = callback;
+    this._callback.closeClick = callback;
 
-    target.addEventListener('click', this._clickHandler);
+    target.addEventListener('click', this._closeClickHandler);
   }
 
   setDeleteClickHandler(callback) {
@@ -141,6 +176,18 @@ export default class RoutePointEdit extends SmartView {
     });
   }
 
+  _dateFromChangeHandler([dateFrom]) {
+    this.updateData({
+      dateFrom: formatDate(dateFrom, null, true),
+    });
+  }
+
+  _dateToChangeHandler([dateTo]) {
+    this.updateData({
+      dateTo: formatDate(dateTo, null, true),
+    });
+  }
+
   _setInnerHandlers() {
     this.getElement().querySelector('.event__type-group').addEventListener('change', this._eventTypeChangeHandler);
     this.getElement().querySelector('.event__input--destination').addEventListener('change', this._destinationChangeHandler);
@@ -151,8 +198,10 @@ export default class RoutePointEdit extends SmartView {
 
     this.setSubmitHandler(this._callback.submit);
 
+    this._setDatepicker();
+
     this.setDeleteClickHandler(this._callback.deleteClick);
 
-    this.setClickHandler(this._callback.click);
+    this.setCloseClickHandler(this._callback.closeClick);
   }
 }
