@@ -1,6 +1,8 @@
 import RoutePointView from '../view/route-point.js';
 import RoutePointEditView from '../view/edit/route-point-edit.js';
 import { render, replace, remove, RenderPosition } from '../utils/render.js';
+import { USER_ACTION, UPDATE_TYPE } from '../const.js';
+import { isDatesEqual } from '../utils/date.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -8,10 +10,9 @@ const Mode = {
 };
 
 export default class RoutePoint {
-  constructor(container, changeData, removeData, changeMode) {
+  constructor(container, changeData, changeMode) {
     this._routePointContainer = container;
     this._changeData = changeData;
-    this._removeData = removeData;
     this._changeMode = changeMode;
 
     this._routePointComponent = null;
@@ -33,7 +34,7 @@ export default class RoutePoint {
     const prevRoutePointEditComponent = this._routePointEditComponent;
 
     this._routePointComponent = new RoutePointView(this._routePoint);
-    this._routePointEditComponent = new RoutePointEditView(this._routePoint);
+    this._routePointEditComponent = new RoutePointEditView(this._routePoint, true, false);
 
     this._routePointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._routePointComponent.setOpenClickHandler(this._handleEditOpenClick);
@@ -91,11 +92,17 @@ export default class RoutePoint {
   _handleDeleteClick() {
     this._replaceFormToPoint();
 
-    this._removeData(this._routePoint);
+    this._changeData(
+      USER_ACTION.DELETE_POINT,
+      UPDATE_TYPE.MINOR,
+      this._routePoint,
+    );
   }
 
   _handleFavoriteClick() {
     this._changeData(
+      USER_ACTION.UPDATE_POINT,
+      UPDATE_TYPE.PATCH,
       Object.assign(
         {},
         this._routePoint,
@@ -128,8 +135,14 @@ export default class RoutePoint {
     this._replaceFormToPoint();
   }
 
-  _handleFormSubmitClick() {
-    this._changeData(this._routePoint);
+  _handleFormSubmitClick(update) {
+    const isPatchUpdate = isDatesEqual(this._routePoint.dateFrom, update.dateFrom) || isDatesEqual(this._routePoint.dateTo, update.dateTo);
+
+    this._changeData(
+      USER_ACTION.UPDATE_POINT,
+      isPatchUpdate ? UPDATE_TYPE.PATCH : UPDATE_TYPE.MINOR,
+      update,
+    );
 
     this._replaceFormToPoint();
   }

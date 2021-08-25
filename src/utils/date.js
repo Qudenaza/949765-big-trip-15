@@ -33,4 +33,6 @@ const formatDate = (date, format, utcMode = false) => {
   return dayjs.utc(date).format();
 };
 
-export { formatDate, calculateDuration, humanizeDates };
+const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) ? true : dayjs(dateA).isSame(dateB, 'D');
+
+export { formatDate, calculateDuration, humanizeDates, isDatesEqual };
