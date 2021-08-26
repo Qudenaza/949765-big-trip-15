@@ -1,4 +1,3 @@
-import SiteMenuView from '../view/site-menu.js';
 import DetailView from '../view/detail.js';
 import TotalCostView from '../view/total-cost.js';
 import { render, RenderPosition } from '../utils/render.js';
@@ -11,19 +10,11 @@ export default class Info {
   init(routePoints) {
     this._routePoints = routePoints;
 
-    this._siteMenuComponent = new SiteMenuView();
     this._detailComponent = new DetailView();
     this._totalCostComponent = new TotalCostView(this._routePoints);
 
     this._renderDetail();
     this._renderTotalCost();
-    this._renderSiteMenu();
-  }
-
-  _renderSiteMenu() {
-    const container = this._container.querySelector('.trip-controls__navigation');
-
-    render(container, this._siteMenuComponent, RenderPosition.BEFOREEND);
   }
 
   _renderDetail() {

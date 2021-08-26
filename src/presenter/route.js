@@ -7,7 +7,7 @@ import RoutePointNewPresenter from './route-point-new';
 import { render, RenderPosition, replace, remove } from '../utils/render.js';
 import { filter } from '../utils/filter.js';
 import { sort } from '../utils/sort.js';
-import { filterType, sortType, USER_ACTION, UPDATE_TYPE } from '../const.js';
+import { sortType, USER_ACTION, UPDATE_TYPE } from '../const.js';
 
 export default class Route {
   constructor(container, routeModel, filterModel) {
@@ -28,23 +28,19 @@ export default class Route {
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
-    this._routeModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
-
     this._routePointNewPresenter = new RoutePointNewPresenter(this._routePointListComponent, this._handleViewAction);
   }
 
   init() {
     render(this._routeContainer, this._routeComponent, RenderPosition.BEFOREEND);
 
+    this._routeModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+
     this._renderRoute();
   }
 
   createRoutePoint() {
-    this._currentSortType = sortType.DEFAULT;
-
-    this._filterModel.setFilter(UPDATE_TYPE.MAJOR, filterType.ALL);
-
     this._routePointNewPresenter.init();
   }
 
@@ -182,5 +178,14 @@ export default class Route {
     this._noRouteComponent.message = this._filterModel.filter;
 
     replace(this._noRouteComponent, this._routePointListComponent);
+  }
+
+  destroy() {
+    this._clearRoute();
+
+    remove(this._routeComponent);
+
+    this._routeModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
   }
 }

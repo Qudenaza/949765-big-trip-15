@@ -13,4 +13,16 @@ const getUniqueID = () => {
   return id.split('-')[0];
 };
 
-export { getRandomInteger, getUniqueID };
+const handlePseudo = (remove)  => {
+  const elements = document.querySelectorAll('.page-body__container');
+
+  if (remove) {
+    elements.forEach((element) => element.classList.add('hide-pseudo'));
+
+    return;
+  }
+
+  elements.forEach((element) => element.classList.remove('hide-pseudo'));
+};
+
+export { getRandomInteger, getUniqueID, handlePseudo };
