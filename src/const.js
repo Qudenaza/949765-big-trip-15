@@ -178,22 +178,27 @@ const BLANK_ROUTE_POINT = {
   type: 'taxi',
   offers: [
     {
+      id: getUniqueID(),
       title: 'Upgrade to a business class',
       price: 190,
     },
     {
+      id: getUniqueID(),
       title: 'Choose the radio station',
       price: 30,
     },
     {
+      id: getUniqueID(),
       title: 'Choose temperature',
       price: 170,
     },
     {
+      id: getUniqueID(),
       title: 'Drive quickly, I\'m in a hurry',
       price: 100,
     },
     {
+      id: getUniqueID(),
       title: 'Drive slowly',
       price: 110,
     },
@@ -204,7 +209,6 @@ const BLANK_ROUTE_POINT = {
     pictures: [],
   },
   isFavorite: false,
-  isBlank: true,
 };
 
 const CITIES = [
@@ -233,4 +237,28 @@ const DESCRIPTIONS = [
   'Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.',
 ];
 
-export { OFFER_TYPES, EVENT_TYPES, BLANK_ROUTE_POINT, CITIES, DESCRIPTIONS };
+const sortType = {
+  DAY: 'day',
+  PRICE: 'price',
+  TIME: 'time',
+};
+
+const filterType = {
+  ALL: 'everything',
+  PAST: 'past',
+  FUTURE: 'future',
+};
+
+const USER_ACTION = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
+
+const UPDATE_TYPE = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+export { OFFER_TYPES, EVENT_TYPES, BLANK_ROUTE_POINT, CITIES, DESCRIPTIONS, sortType, filterType, USER_ACTION, UPDATE_TYPE };

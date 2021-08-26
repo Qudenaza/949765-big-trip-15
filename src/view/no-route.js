@@ -1,9 +1,10 @@
 import AbstractView from './abstract.js';
+import { filterType } from '../const.js';
 
 const NO_ROUTE_MESSAGES = {
-  'everything': 'Click New Event to create your first point',
-  'future': 'There are no future events now',
-  'past': 'There are no past events now',
+  [filterType.ALL]: 'Click New Event to create your first point',
+  [filterType.FUTURE]: 'There are no future events now',
+  [filterType.PAST]: 'There are no past events now',
 };
 
 const createNoRouteTemplate = (message) => `<p class="trip-events__msg">${NO_ROUTE_MESSAGES[message]}</p>`;
