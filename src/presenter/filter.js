@@ -49,5 +49,17 @@ export default class Filter {
   _getFilters() {
     return Object.values(filterType);
   }
+
+  disableFilters() {
+    const filters = document.querySelectorAll('.trip-filters__filter-input');
+
+    filters.forEach((filter) => filter.setAttribute('disabled', true));
+  }
+
+  enableFilters() {
+    const filters = document.querySelectorAll('.trip-filters__filter-input');
+
+    filters.forEach((filter) => filter.removeAttribute('disabled'));
+  }
 }
 

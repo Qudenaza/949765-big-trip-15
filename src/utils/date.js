@@ -2,8 +2,8 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { getRandomInteger } from './common.js';
 
-const calculateDuration = (from, to) => {
-  const ms = dayjs(to).diff(dayjs(from));
+const calculateDuration = (from, to, singleDate = false) => {
+  const ms = singleDate ? singleDate : dayjs(to).diff(dayjs(from));
 
   let minutes = parseInt(((ms / (1000 * 60)) % 60), 10),
     hours = parseInt(((ms / (1000 * 60 * 60)) % 24), 10),

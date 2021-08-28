@@ -249,6 +249,11 @@ const filterType = {
   FUTURE: 'future',
 };
 
+const MENU_ITEM = {
+  ROUTE: 'Table',
+  STATS: 'Stats',
+};
+
 const USER_ACTION = {
   UPDATE_POINT: 'UPDATE_POINT',
   ADD_POINT: 'ADD_POINT',
@@ -261,4 +266,15 @@ const UPDATE_TYPE = {
   MAJOR: 'MAJOR',
 };
 
-export { OFFER_TYPES, EVENT_TYPES, BLANK_ROUTE_POINT, CITIES, DESCRIPTIONS, sortType, filterType, USER_ACTION, UPDATE_TYPE };
+const BACKGROUND_COLORS = {
+  'taxi': 'rgba(252, 224, 0, 0.6)',
+  'bus': 'rgba(233, 30, 99, 0.6)',
+  'train': 'rgba(3, 169, 244, 0.6)',
+  'ship': 'rgba(103, 58, 183, 0.6)',
+  'drive': 'rgba(244, 67, 54, 0.6)',
+  'flight': 'rgba(0, 150, 136, 0.6)',
+  'check-in': 'rgba(96, 125, 139, 0.6)',
+  'restaurant': 'rgba(205, 220, 57, 0.6)',
+};
+
+export { OFFER_TYPES, EVENT_TYPES, BLANK_ROUTE_POINT, CITIES, DESCRIPTIONS, sortType, filterType, MENU_ITEM, USER_ACTION, UPDATE_TYPE, BACKGROUND_COLORS };

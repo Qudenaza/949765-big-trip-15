@@ -208,11 +208,17 @@ export default class RoutePointEdit extends SmartView {
   _priceChangeHandler(evt) {
     const value = evt.target.value;
 
-    if (!isNaN(value)) {
+    if (!isNaN(value) && value >= 0) {
       this.updateData({
         basePrice: value,
       });
+
+      return;
     }
+
+    this.updateData({
+      basePrice: 0,
+    });
   }
 
   _offersChangeHandler(evt) {
