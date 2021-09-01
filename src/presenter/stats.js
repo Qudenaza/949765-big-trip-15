@@ -1,16 +1,16 @@
-import StatisticsView from '../view/statistics.js';
+import StatsView from '../view/stats.js';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { remove } from '../utils/render.js';
 import { calculateDuration } from '../utils/date.js';
 import { BACKGROUND_COLORS } from '../const.js';
-import { calculateCost, calculateType, calculateTime } from '../utils/statistics.js';
+import { calculateCost, calculateType, calculateTime } from '../utils/stats.js';
 import { render, RenderPosition } from '../utils/render.js';
 
-export default class Statistics {
-  constructor(container, routeModel) {
+export default class Stats {
+  constructor(container, models) {
     this._container = container;
-    this._routeModel = routeModel;
+    this._routeModel = models.get('routeModel');
 
     this._renderMoneyChart = this._renderMoneyChart.bind(this);
     this._renderTypeChart = this._renderTypeChart.bind(this);
@@ -18,11 +18,11 @@ export default class Statistics {
   }
 
   init() {
-    this._statisticsComponent = new StatisticsView();
+    this._statisticsComponent = new StatsView();
 
     render(this._container, this._statisticsComponent, RenderPosition.BEFOREEND);
 
-    this._data = this._routeModel.routePoints;
+    this._data = this._routeModel.data;
 
     this._statisticsComponent.setCharts(this._renderMoneyChart, this._renderTypeChart, this._renderTimeChart);
   }

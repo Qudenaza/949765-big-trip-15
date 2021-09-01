@@ -1,8 +1,8 @@
 import RoutePointView from '../view/route-point.js';
-import RoutePointEditView from '../view/edit/route-point-edit.js';
-import { render, replace, remove, RenderPosition } from '../utils/render.js';
-import { USER_ACTION, UPDATE_TYPE } from '../const.js';
+import RoutePointEditView from '../view/route-point-edit.js';
+import { render, RenderPosition, replace, remove } from '../utils/render.js';
 import { isDatesEqual } from '../utils/date.js';
+import { USER_ACTION, UPDATE_TYPE } from '../const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -10,40 +10,40 @@ const Mode = {
 };
 
 export default class RoutePoint {
-  constructor(container, changeData, changeMode) {
-    this._routePointContainer = container;
+  constructor(container, changeData, changeMode, mockModel) {
+    this._container = container;
     this._changeData = changeData;
     this._changeMode = changeMode;
 
+    this._mockModel = mockModel;
+
     this._routePointComponent = null;
     this._routePointEditComponent = null;
+
     this._mode = Mode.DEFAULT;
 
-    this._handleDeleteClick = this._handleDeleteClick.bind(this);
-    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
-    this._handleEditOpenClick = this._handleEditOpenClick.bind(this);
-    this._handleEditCloseClick = this._handleEditCloseClick.bind(this);
-    this._handleFormSubmitClick = this._handleFormSubmitClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
-  init(point) {
-    this._routePoint = point;
+  init(data) {
+    this._data = data;
 
     const prevRoutePointComponent = this._routePointComponent;
     const prevRoutePointEditComponent = this._routePointEditComponent;
 
-    this._routePointComponent = new RoutePointView(this._routePoint);
-    this._routePointEditComponent = new RoutePointEditView(this._routePoint, true, false);
+    this._routePointComponent = new RoutePointView(this._data);
+    this._routePointEditComponent = new RoutePointEditView(this._data, this._mockModel.offers, this._mockModel.destinations);
 
-    this._routePointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
-    this._routePointComponent.setOpenClickHandler(this._handleEditOpenClick);
-    this._routePointEditComponent.setCloseClickHandler(this._handleEditCloseClick);
-    this._routePointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
-    this._routePointEditComponent.setSubmitHandler(this._handleFormSubmitClick);
+    this._routePointComponent.setEditOpenClickHandler(this._handleOpenEditClick.bind(this));
+    this._routePointComponent.setFavoriteClickHandler(this._handleFavoriteClick.bind(this));
+    this._routePointEditComponent.setSubmitClickHandler(this._handleSubmitClick.bind(this));
+    this._routePointEditComponent.setEditCloseClickHandler(this._handleCloseEditClick.bind(this));
+    this._routePointEditComponent.setDeleteClickHandler(this._handleDeleteClick.bind(this));
+    this._routePointEditComponent.setFavoriteClickHandler(this._handleFavoriteClick.bind(this));
+
 
     if (prevRoutePointComponent === null || prevRoutePointEditComponent === null) {
-      render(this._routePointContainer, this._routePointComponent, RenderPosition.BEFOREEND);
+      render(this._container, this._routePointComponent, RenderPosition.BEFOREEND);
 
       return;
     }
@@ -65,85 +65,96 @@ export default class RoutePoint {
     remove(this._routePointEditComponent);
   }
 
-  resetView() {
-    if (this._mode !== Mode.DEFAULT) {
-      this._replaceFormToPoint();
-    }
-  }
-
-  _replacePointToForm() {
+  _replacePointToEdit() {
     replace(this._routePointEditComponent, this._routePointComponent);
 
     document.addEventListener('keydown', this._escKeyDownHandler);
+
+    this._routePointEditComponent.setDatepicker();
 
     this._changeMode();
 
     this._mode = Mode.EDITING;
   }
 
-  _replaceFormToPoint() {
-    replace(this._routePointComponent,  this._routePointEditComponent);
+  _replaceEditToPoint() {
+    replace(this._routePointComponent, this._routePointEditComponent);
 
     document.removeEventListener('keydown', this._escKeyDownHandler);
+
+    this._routePointEditComponent.destroyDatepicker();
 
     this._mode = Mode.DEFAULT;
   }
 
-  _handleDeleteClick() {
-    this._replaceFormToPoint();
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._routePointEditComponent.reset(this._data);
 
-    this._changeData(
-      USER_ACTION.DELETE_POINT,
-      UPDATE_TYPE.MINOR,
-      this._routePoint,
-    );
+      this._replaceEditToPoint();
+    }
   }
 
-  _handleFavoriteClick() {
+  _handleOpenEditClick() {
+    this._replacePointToEdit();
+  }
+
+  _handleFavoriteClick(update, edit) {
     this._changeData(
       USER_ACTION.UPDATE_POINT,
-      UPDATE_TYPE.PATCH,
+      UPDATE_TYPE.MINOR,
       Object.assign(
         {},
-        this._routePoint,
-        {
-          isFavorite: !this._routePoint.isFavorite,
-        },
+        update,
+        { isFavorite: !update.isFavorite },
       ),
     );
+
+    if (edit) {
+      this._routePointEditComponent.reset(update);
+      this.init(update);
+    }
+  }
+
+  _handleCloseEditClick() {
+    this._routePointEditComponent.reset(this._data);
+
+    this._replaceEditToPoint();
+  }
+
+  _handleSubmitClick(update) {
+    const isMinorUpdate = isDatesEqual(this._data.dateFrom, update.dateFrom) && isDatesEqual(this._data.dateTo, update.dateTo);
+    const totalPrice = update.basePrice + update.offers.reduce((sum, current) => sum + current.price, 0);
+
+    this._changeData(
+      USER_ACTION.UPDATE_POINT,
+      isMinorUpdate ? UPDATE_TYPE.MINOR : UPDATE_TYPE.MAJOR,
+      update,
+      {totalPrice},
+    );
+
+    this._replaceEditToPoint();
+  }
+
+  _handleDeleteClick(update) {
+    this._changeData(
+      USER_ACTION.DELETE_POINT,
+      UPDATE_TYPE.MAJOR,
+      update,
+    );
+
+    this._replaceEditToPoint();
   }
 
   _escKeyDownHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
 
-      this._routePointEditComponent.reset(this._routePoint);
+      this._routePointEditComponent.reset(this._data);
 
-      this._replaceFormToPoint();
+      this._replaceEditToPoint();
 
       document.removeEventListener('keydown', this._escKeyDownHandler);
     }
-  }
-
-  _handleEditOpenClick() {
-    this._replacePointToForm();
-  }
-
-  _handleEditCloseClick() {
-    this._routePointEditComponent.reset(this._routePoint);
-
-    this._replaceFormToPoint();
-  }
-
-  _handleFormSubmitClick(update) {
-    const isPatchUpdate = isDatesEqual(this._routePoint.dateFrom, update.dateFrom) || isDatesEqual(this._routePoint.dateTo, update.dateTo);
-
-    this._changeData(
-      USER_ACTION.UPDATE_POINT,
-      isPatchUpdate ? UPDATE_TYPE.PATCH : UPDATE_TYPE.MINOR,
-      update,
-    );
-
-    this._replaceFormToPoint();
   }
 }

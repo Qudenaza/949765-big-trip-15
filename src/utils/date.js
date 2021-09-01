@@ -1,38 +1,35 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import { getRandomInteger } from './common.js';
 
-const calculateDuration = (from, to, singleDate = false) => {
+dayjs.extend(utc);
+
+export const formatDate = (date, format, isUtc = true) => isUtc ? dayjs.utc(date).format(format) : dayjs(date).format(format);
+
+export const getCorrectTime = (date) => {
+  const hours = dayjs(date).utc().hour();
+  const minutes = dayjs(date).utc().minute();
+
+  return `${hours > 9 ? hours : `0${hours}`}:${minutes > 9 ? minutes : `0${minutes}`}`;
+};
+
+export const calculateDuration = (from, to, singleDate = false) => {
   const ms = singleDate ? singleDate : dayjs(to).diff(dayjs(from));
 
-  let minutes = parseInt(((ms / (1000 * 60)) % 60), 10),
-    hours = parseInt(((ms / (1000 * 60 * 60)) % 24), 10),
-    days = parseInt((ms / (1000 * 60 * 60 * 24)), 10);
+  let days = parseInt((ms / (1000 * 60 * 60 * 24)), 10);
+  let hours = parseInt(((ms / (1000 * 60 * 60)) % 24), 10);
+  let minutes = parseInt(((ms / (1000 * 60)) % 60), 10);
 
-  days = (days < 10) ? `0${days}` : days;
-  hours = (hours < 10) ? `0${hours}` : hours;
-  minutes = (minutes < 10) ? `0${minutes}` : minutes;
+  days = days < 10 ? `0${days}D` : `${days}D`;
+  hours = hours < 10 ? `0${hours}H` : `${hours}H`;
+  minutes = minutes < 10 ? `0${minutes}M` : `${minutes}M`;
 
-  return `${days === '00' ? '' : `${days}D`} ${hours === '00' ? '00H' : `${hours}H`} ${minutes === '00' ? '00M' : `${minutes}M`}`;
-};
-
-const humanizeDates = () => {
-  dayjs.extend(utc);
-
-  const dateFrom = dayjs.utc().add(getRandomInteger(1, 100), 'days').add(getRandomInteger(2, 24), 'hours').add(getRandomInteger(1, 60), 'minutes').format();
-  const dateTo = dayjs.utc(dateFrom).add(getRandomInteger(0, 20), 'days').add(getRandomInteger(2, 24), 'hours').add(getRandomInteger(1, 60), 'minutes').format();
-
-  return [dateFrom, dateTo];
-};
-
-const formatDate = (date, format, utcMode = false) => {
-  if (!utcMode) {
-    return dayjs(date).format(format);
+  if (days !== '00D') {
+    return `${days} ${hours} ${minutes}`;
+  } else if (hours !== '00H') {
+    return `${hours} ${minutes}`;
   }
 
-  return dayjs.utc(date).format();
+  return minutes;
 };
 
-const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) ? true : dayjs(dateA).isSame(dateB, 'D');
-
-export { formatDate, calculateDuration, humanizeDates, isDatesEqual };
+export const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) ? true : dayjs(dateA).isSame(dateB, 'D');

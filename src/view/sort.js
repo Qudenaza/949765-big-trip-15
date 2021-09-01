@@ -44,12 +44,6 @@ const createSortTemplate = () => {
 };
 
 export default class Sort extends AbstractView {
-  constructor() {
-    super();
-
-    this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
-  }
-
   getTemplate() {
     return createSortTemplate();
   }
@@ -63,6 +57,6 @@ export default class Sort extends AbstractView {
 
     this._callback.sortTypeChange = callback;
 
-    target.addEventListener('change', this._sortTypeChangeHandler);
+    target.addEventListener('change', this._sortTypeChangeHandler.bind(this));
   }
 }
