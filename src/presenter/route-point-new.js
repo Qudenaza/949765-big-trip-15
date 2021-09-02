@@ -1,17 +1,21 @@
-import RoutePointEditView from '../view/edit/route-point-edit.js';
-import { getUniqueID } from '../utils/common.js';
-import { remove, render, RenderPosition } from '../utils/render.js';
+import RoutePointEditView from '../view/route-point-edit.js';
+import { nanoid } from 'nanoid';
+import { remove, render, replace, RenderPosition } from '../utils/render.js';
 import { USER_ACTION, UPDATE_TYPE } from '../const.js';
+import { BLANK_DATA } from '../const.js';
 
 export default class RoutePointNew {
-  constructor(routePointListContainer, changeData) {
-    this._routePointListContainer = routePointListContainer;
+  constructor(container, noRoute, newButton, changeData, mockModel, filterModel) {
+    this._container = container;
     this._changeData = changeData;
 
-    this._routePointEditComponent = null;
+    this._mockModel = mockModel;
+    this._filterModel = filterModel;
 
-    this._handleFormSubmit = this._handleFormSubmit.bind(this);
-    this._handleDeleteClick = this._handleDeleteClick.bind(this);
+    this._noRouteComponent = noRoute;
+    this._routePointEditComponent = null;
+    this._newButtonComponent = newButton;
+
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
@@ -20,11 +24,14 @@ export default class RoutePointNew {
       return;
     }
 
-    this._routePointEditComponent = new RoutePointEditView(undefined, false);
-    this._routePointEditComponent.setSubmitHandler(this._handleFormSubmit);
-    this._routePointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
+    this._routePointEditComponent = new RoutePointEditView(BLANK_DATA, this._mockModel.offers, this._mockModel.destinations, true);
+    this._routePointEditComponent.setSubmitClickHandler(this._handleFormSubmit.bind(this));
+    this._routePointEditComponent.setDeleteClickHandler(this._handleDeleteClick.bind(this));
+    this._routePointEditComponent.setDatepicker();
 
-    render(this._routePointListContainer, this._routePointEditComponent, RenderPosition.AFTERBEGIN);
+    this._newButtonComponent.disable();
+
+    render(this._container, this._routePointEditComponent, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this._escKeyDownHandler);
   }
@@ -36,16 +43,29 @@ export default class RoutePointNew {
 
     remove(this._routePointEditComponent);
 
+    if (!this._container.getElement().children.length) {
+      this._noRouteComponent.message = this._filterModel.filter;
+
+
+      replace(this._noRouteComponent, this._container);
+    }
+
+    this._routePointEditComponent.destroyDatepicker();
+
     this._routePointEditComponent = null;
+
+    this._newButtonComponent.enable();
 
     document.removeEventListener('keydown', this._escKeyDownHandler);
   }
 
   _handleFormSubmit(update) {
+    const totalPrice = update.basePrice + update.offers.reduce((sum, current) => sum + current.price, 0);
+
     this._changeData(
       USER_ACTION.ADD_POINT,
-      UPDATE_TYPE.MINOR,
-      Object.assign({id: getUniqueID()}, update),
+      UPDATE_TYPE.MAJOR,
+      Object.assign({id: nanoid()}, update, {totalPrice}),
     );
 
     this.destroy();

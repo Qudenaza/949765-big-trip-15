@@ -1,13 +1,11 @@
-import Abstract from './abstract.js';
+import AbstractView from './abstract.js';
 
-export default class Smart extends Abstract {
+export default class Smart extends AbstractView {
   constructor() {
     super();
-
-    this._data = {};
   }
 
-  updateData(update, reRender = false) {
+  updateData(update, reRender = true) {
     if (!update) {
       return;
     }
@@ -18,7 +16,7 @@ export default class Smart extends Abstract {
       update,
     );
 
-    if  (!reRender) {
+    if (reRender) {
       this.updateElement();
     }
   }

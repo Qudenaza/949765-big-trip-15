@@ -1,17 +1,17 @@
-import Abstract from '../view/abstract.js';
+import AbstractView from '../view/abstract';
 
-const RenderPosition = {
+export const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
   BEFOREBEGIN: 'beforebegin',
 };
 
-const render = (container, child, place) => {
-  if (container instanceof Abstract) {
+export const render = (container, child, place) => {
+  if (container instanceof AbstractView) {
     container = container.getElement();
   }
 
-  if (child instanceof Abstract) {
+  if (child instanceof AbstractView) {
     child = child.getElement();
   }
 
@@ -28,12 +28,20 @@ const render = (container, child, place) => {
   }
 };
 
-const replace = (newChild, oldChild) => {
-  if (oldChild instanceof Abstract) {
+export const createElement = (template) => {
+  const newElement = document.createElement('div');
+
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
+
+export const replace = (newChild, oldChild) => {
+  if (oldChild instanceof AbstractView) {
     oldChild = oldChild.getElement();
   }
 
-  if (newChild instanceof Abstract) {
+  if (newChild instanceof AbstractView) {
     newChild = newChild.getElement();
   }
 
@@ -46,21 +54,11 @@ const replace = (newChild, oldChild) => {
   parent.replaceChild(newChild, oldChild);
 };
 
-const remove = (component) => {
-  if (!(component instanceof Abstract)) {
+export const remove = (component) => {
+  if (!(component instanceof AbstractView)) {
     throw new Error('Can remove only components');
   }
 
   component.getElement().remove();
   component.removeElement();
 };
-
-const createElement = (template) => {
-  const newElement = document.createElement('div');
-
-  newElement.innerHTML = template;
-
-  return newElement.firstChild;
-};
-
-export { RenderPosition, render, replace, remove, createElement };

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-const calculateCost = (data) => {
+export const calculateCost = (data) => {
   const costByType = {
     'taxi': 0,
     'bus': 0,
@@ -20,7 +20,7 @@ const calculateCost = (data) => {
   return dataByOrder;
 };
 
-const calculateType = (data) => {
+export const calculateType = (data) => {
   const timesByType = {
     'taxi': 0,
     'bus': 0,
@@ -40,7 +40,7 @@ const calculateType = (data) => {
   return dataByOrder;
 };
 
-const calculateTime = (data) => {
+export const calculateTime = (data) => {
   const timeByType = {
     'taxi': 0,
     'bus': 0,
@@ -60,5 +60,3 @@ const calculateTime = (data) => {
   return dataByOrder;
 };
 
-
-export { calculateCost, calculateType, calculateTime };

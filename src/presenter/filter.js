@@ -1,20 +1,17 @@
 import FilterView from '../view/filter.js';
 import { render, RenderPosition, replace, remove } from '../utils/render.js';
-import { filterType, UPDATE_TYPE } from '../const.js';
+import { FILTER_TYPE, UPDATE_TYPE } from '../const.js';
 
 export default class Filter {
-  constructor(filterContainer, filterModel, routeModel) {
+  constructor(filterContainer, models) {
     this._filterContainer = filterContainer;
-    this._filterModel = filterModel;
-    this._routeModel = routeModel;
+    this._filterModel = models.get('filterModel');
+    this._routeModel = models.get('routeModel');
 
     this._filterComponent = null;
 
-    this._handleModelEvent = this._handleModelEvent.bind(this);
-    this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
-
-    this._routeModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
+    this._routeModel.addObserver(this._handleModelEvent.bind(this));
+    this._filterModel.addObserver(this._handleModelEvent.bind(this));
   }
 
   init() {
@@ -22,7 +19,7 @@ export default class Filter {
     const prevFilterComponent = this._filterComponent;
 
     this._filterComponent = new FilterView(filters, this._filterModel.filter);
-    this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
+    this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange.bind(this));
 
     if (prevFilterComponent === null) {
       render(this._filterContainer, this._filterComponent, RenderPosition.BEFOREEND);
@@ -47,7 +44,7 @@ export default class Filter {
   }
 
   _getFilters() {
-    return Object.values(filterType);
+    return Object.values(FILTER_TYPE);
   }
 
   disableFilters() {
@@ -62,4 +59,3 @@ export default class Filter {
     filters.forEach((filter) => filter.removeAttribute('disabled'));
   }
 }
-
