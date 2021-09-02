@@ -13,11 +13,11 @@ const createEventTypesTemplate = (blankOffers) => Object.keys(blankOffers).map((
 <label class="event__type-label event__type-label--${offer}" for="event-type-${offer}-1">${offer = offer[0].toUpperCase() + offer.slice(1)}</label>
 </div>`).join('');
 
-const createOffersTemplate = (blankOffers, selectedOffers) => blankOffers.map((offer) => {
+const createOffersTemplate = (blankOffers, selectedOffers, isDisabled) => blankOffers.map((offer) => {
   const id = nanoid();
 
   return `<div class="event__offer-selector">
-    <input class="event__offer-checkbox visually-hidden" id="event-offer-${id}-1" type="checkbox" name="event-offer-${id}" ${selectedOffers.find((data) => checkSimilarOffer(data, offer)) ? 'checked' : ''}>
+    <input class="event__offer-checkbox visually-hidden" id="event-offer-${id}-1" type="checkbox" name="event-offer-${id}" ${selectedOffers.find((data) => checkSimilarOffer(data, offer)) ? 'checked' : ''}  ${isDisabled ? 'disabled' : ''}>
     <label class="event__offer-label" for="event-offer-${id}-1">
     <span class="event__offer-title">${offer.title}</span>
     &plus;&euro;&nbsp;
@@ -26,8 +26,16 @@ const createOffersTemplate = (blankOffers, selectedOffers) => blankOffers.map((o
   </div>`;
 }).join('');
 
+const createRejectTemplate = (isNew, isDeleting) => {
+  if (isDeleting) {
+    return '<button class="event__reset-btn" type="reset">Deleting...</button>';
+  }
+
+  return `<button class="event__reset-btn" type="reset">${isNew ? 'Cancel' : 'Delete'}</button>`;
+};
+
 const createRoutePointEditTemplate = (data, blankOffers, destinations, isNew = false) => {
-  const { basePrice, type, dateFrom, dateTo, destination: {description, pictures, name: city}, isFavorite, offers } = data;
+  const { basePrice, type, dateFrom, dateTo, destination: {description, pictures, name: city}, isFavorite, isDisabled, isSaving, isDeleting, offers } = data;
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -37,7 +45,7 @@ const createRoutePointEditTemplate = (data, blankOffers, destinations, isNew = f
           <span class="visually-hidden">Choose event type</span>
           <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
         </label>
-        <input class="event__type-toggle visually-hidden" id="event-type-toggle-1" type="checkbox">
+        <input class="event__type-toggle visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 
         <div class="event__type-list">
           <fieldset class="event__type-group">
@@ -51,7 +59,7 @@ const createRoutePointEditTemplate = (data, blankOffers, destinations, isNew = f
         <label class="event__label event__type-output" for="event-destination-1">
           ${type}
         </label>
-        <input class="event__input event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1" onkeyup="this.value=this.value=''">
+        <input class="event__input event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1" onkeyup="this.value=this.value=''" ${isDisabled ? 'disabled' : ''}>
         <datalist id="destination-list-1">
           ${Object.keys(destinations).map((item) => `<option value="${item}"></option>`)}
         </datalist>
@@ -59,10 +67,10 @@ const createRoutePointEditTemplate = (data, blankOffers, destinations, isNew = f
 
       <div class="event__field-group event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(dateFrom, 'DD/MM/YY HH:mm')}">
+        <input class="event__input event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(dateFrom, 'DD/MM/YY HH:mm')}"  ${isDisabled ? 'disabled' : ''}>
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate(dateTo, 'DD/MM/YY HH:mm')}">
+        <input class="event__input event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate(dateTo, 'DD/MM/YY HH:mm')}"  ${isDisabled ? 'disabled' : ''}>
       </div>
 
       <div class="event__field-group event__field-group--price">
@@ -70,12 +78,11 @@ const createRoutePointEditTemplate = (data, blankOffers, destinations, isNew = f
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}">
+        <input class="event__input event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}"  ${isDisabled ? 'disabled' : ''}>
       </div>
-
-      <button class="event__save-btn btn btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">${isNew ? 'Cancel' : 'Delete'}</button>
-      ${isNew ? '' : `<button class="event__favorite-btn ${isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
+      <button class="event__save-btn btn btn--blue" type="submit">${isSaving ? 'Saving...' : 'Save'}</button>
+      ${createRejectTemplate(isNew, isDeleting)}
+      ${isNew ? '' : `<button class="event__favorite-btn ${isFavorite ? 'event__favorite-btn--active' : ''}" type="button"  ${isDisabled ? 'disabled' : ''}>
         <span class="visually-hidden">Add to favorite</span>
         <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
           <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
@@ -89,7 +96,7 @@ const createRoutePointEditTemplate = (data, blankOffers, destinations, isNew = f
       ${blankOffers[type].length ? `<section class="event__section event__section--offers">
         <h3 class="event__section-title event__section-title--offers">Offers</h3>
         <div class="event__available-offers">
-        ${createOffersTemplate(blankOffers[type], offers)}
+        ${createOffersTemplate(blankOffers[type], offers, isDisabled)}
         </div>
       </section>` : ''}
 
@@ -143,10 +150,6 @@ export default class RoutePointEdit extends SmartView {
     this._callback.delete(this._data);
   }
 
-  _favoriteClickHandler() {
-    this._callback.favoriteClick(this._data, true);
-  }
-
   setEditCloseClickHandler(callback) {
     const target = this.getElement().querySelector('.event__rollup-btn');
 
@@ -175,18 +178,6 @@ export default class RoutePointEdit extends SmartView {
     target.addEventListener('click', this._deleteClickHandler.bind(this));
   }
 
-  setFavoriteClickHandler(callback) {
-    const target = this.getElement().querySelector('.event__favorite-btn');
-
-    if (!target) {
-      return;
-    }
-
-    this._callback.favoriteClick = callback;
-
-    target.addEventListener('click', this._favoriteClickHandler.bind(this));
-  }
-
   _setInnerHandlers() {
     const target = this.getElement();
 
@@ -202,6 +193,7 @@ export default class RoutePointEdit extends SmartView {
       target.querySelector('.event__available-offers').addEventListener('change', this._offersChangeHandler.bind(this));
     }
   }
+
 
   _eventTypeChangeHandler(evt) {
     this._eventType = evt.target.value;

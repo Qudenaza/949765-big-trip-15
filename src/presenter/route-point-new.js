@@ -1,5 +1,4 @@
 import RoutePointEditView from '../view/route-point-edit.js';
-import { nanoid } from 'nanoid';
 import { remove, render, replace, RenderPosition } from '../utils/render.js';
 import { USER_ACTION, UPDATE_TYPE } from '../const.js';
 import { BLANK_DATA } from '../const.js';
@@ -36,6 +35,25 @@ export default class RoutePointNew {
     document.addEventListener('keydown', this._escKeyDownHandler);
   }
 
+  setSaving() {
+    this._routePointEditComponent.updateData({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this._routePointEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this._routePointEditComponent.shake(resetFormState);
+  }
+
   destroy() {
     if (this._routePointEditComponent === null) {
       return;
@@ -60,15 +78,11 @@ export default class RoutePointNew {
   }
 
   _handleFormSubmit(update) {
-    const totalPrice = update.basePrice + update.offers.reduce((sum, current) => sum + current.price, 0);
-
     this._changeData(
       USER_ACTION.ADD_POINT,
       UPDATE_TYPE.MAJOR,
-      Object.assign({id: nanoid()}, update, {totalPrice}),
+      update,
     );
-
-    this.destroy();
   }
 
   _handleDeleteClick() {

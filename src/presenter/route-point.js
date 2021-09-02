@@ -9,6 +9,12 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
+export const State = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+  ABORTING: 'ABORTING',
+};
+
 export default class RoutePoint {
   constructor(container, changeData, changeMode, mockModel) {
     this._container = container;
@@ -39,7 +45,7 @@ export default class RoutePoint {
     this._routePointEditComponent.setSubmitClickHandler(this._handleSubmitClick.bind(this));
     this._routePointEditComponent.setEditCloseClickHandler(this._handleCloseEditClick.bind(this));
     this._routePointEditComponent.setDeleteClickHandler(this._handleDeleteClick.bind(this));
-    this._routePointEditComponent.setFavoriteClickHandler(this._handleFavoriteClick.bind(this));
+    // this._routePointEditComponent.setFavoriteClickHandler(this._handleFavoriteClick.bind(this));
 
 
     if (prevRoutePointComponent === null || prevRoutePointEditComponent === null) {
@@ -53,11 +59,46 @@ export default class RoutePoint {
     }
 
     if (this._mode === Mode.EDITING) {
-      replace(this._routePointEditComponent, prevRoutePointEditComponent);
+      replace(this._routePointComponent, prevRoutePointEditComponent);
+
+      this._mode = Mode.DEFAULT;
     }
 
     remove(prevRoutePointComponent);
     remove(prevRoutePointEditComponent);
+  }
+
+  setViewState(state) {
+    if (this._mode === Mode.DEFAULT) {
+      return;
+    }
+
+    const resetFormState = () => {
+      this._routePointEditComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    switch (state) {
+      case State.SAVING:
+        this._routePointEditComponent.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case State.DELETING:
+        this._routePointEditComponent.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+      case State.ABORTING:
+        this._routePointComponent.shake(resetFormState);
+        this._routePointEditComponent.shake(resetFormState);
+        break;
+    }
   }
 
   destroy() {
@@ -99,19 +140,18 @@ export default class RoutePoint {
     this._replacePointToEdit();
   }
 
-  _handleFavoriteClick(update, edit) {
+  _handleFavoriteClick(update, isEdit) {
+    update = Object.assign({}, update, {isFavorite: !update.isFavorite});
+
     this._changeData(
       USER_ACTION.UPDATE_POINT,
       UPDATE_TYPE.MINOR,
-      Object.assign(
-        {},
-        update,
-        { isFavorite: !update.isFavorite },
-      ),
+      update,
     );
 
-    if (edit) {
-      this._routePointEditComponent.reset(update);
+
+    if (isEdit) {
+      // this._routePointEditComponent.reset(update);
       this.init(update);
     }
   }
@@ -124,16 +164,12 @@ export default class RoutePoint {
 
   _handleSubmitClick(update) {
     const isMinorUpdate = isDatesEqual(this._data.dateFrom, update.dateFrom) && isDatesEqual(this._data.dateTo, update.dateTo);
-    const totalPrice = update.basePrice + update.offers.reduce((sum, current) => sum + current.price, 0);
 
     this._changeData(
       USER_ACTION.UPDATE_POINT,
       isMinorUpdate ? UPDATE_TYPE.MINOR : UPDATE_TYPE.MAJOR,
       update,
-      {totalPrice},
     );
-
-    this._replaceEditToPoint();
   }
 
   _handleDeleteClick(update) {
@@ -142,8 +178,6 @@ export default class RoutePoint {
       UPDATE_TYPE.MAJOR,
       update,
     );
-
-    this._replaceEditToPoint();
   }
 
   _escKeyDownHandler(evt) {
