@@ -9,7 +9,8 @@ import { sort } from '../utils/sort.js';
 import { filter } from '../utils/filter.js';
 import { render, RenderPosition, remove, replace } from '../utils/render.js';
 import { USER_ACTION, UPDATE_TYPE, SORT_TYPE } from '../const.js';
-import { handlePseudo } from '../utils/common.js';
+import { handlePseudo, isOnline } from '../utils/common.js';
+import { toast } from '../utils/toast.js';
 
 export default class RouteBoard {
   constructor(container, models, api) {
@@ -55,6 +56,12 @@ export default class RouteBoard {
   }
 
   createRoutePoint() {
+    if (!isOnline()) {
+      toast('You can\'t create new point offline');
+
+      return;
+    }
+
     const noRoute = document.querySelector('.trip-events__msg');
 
     if (noRoute) {
@@ -101,6 +108,12 @@ export default class RouteBoard {
   }
 
   _renderRouteBoard() {
+    if (!this._routeModel.data.length) {
+      this._renderNoRoute();
+
+      return;
+    }
+
     if (this._isLoading) {
       this._renderLoading();
 
@@ -180,11 +193,19 @@ export default class RouteBoard {
   }
 
   _renderNoRoute() {
-    remove(this._sortComponent);
+    if (this._sortComponent) {
+      remove(this._sortComponent);
+    }
 
     this._noRouteComponent.message = this._filterModel.filter;
 
-    replace(this._noRouteComponent, this._routePointListComponent);
+    // if (this._routePointListComponent) {
+    //   replace(this._noRouteComponent, this._routePointListComponent);
+
+    //   return;
+    // }
+
+    render(this._container, this._noRouteComponent, RenderPosition.BEFOREEND);
   }
 
   _handleModeChange() {

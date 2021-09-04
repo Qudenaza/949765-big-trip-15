@@ -3,6 +3,8 @@ import RoutePointEditView from '../view/route-point-edit.js';
 import { render, RenderPosition, replace, remove } from '../utils/render.js';
 import { isDatesEqual } from '../utils/date.js';
 import { USER_ACTION, UPDATE_TYPE } from '../const.js';
+import { isOnline } from '../utils/common.js';
+import { toast } from '../utils/toast.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -45,7 +47,6 @@ export default class RoutePoint {
     this._routePointEditComponent.setSubmitClickHandler(this._handleSubmitClick.bind(this));
     this._routePointEditComponent.setEditCloseClickHandler(this._handleCloseEditClick.bind(this));
     this._routePointEditComponent.setDeleteClickHandler(this._handleDeleteClick.bind(this));
-    // this._routePointEditComponent.setFavoriteClickHandler(this._handleFavoriteClick.bind(this));
 
 
     if (prevRoutePointComponent === null || prevRoutePointEditComponent === null) {
@@ -137,23 +138,31 @@ export default class RoutePoint {
   }
 
   _handleOpenEditClick() {
+    if (!isOnline()) {
+      toast('You can\'t edit point offline');
+
+      return;
+    }
+
     this._replacePointToEdit();
   }
 
-  _handleFavoriteClick(update, isEdit) {
-    update = Object.assign({}, update, {isFavorite: !update.isFavorite});
+  _handleFavoriteClick(update) {
+    if (!isOnline()) {
+      toast('You can\'t edit point offline');
+
+      return;
+    }
 
     this._changeData(
       USER_ACTION.UPDATE_POINT,
       UPDATE_TYPE.MINOR,
-      update,
+      Object.assign(
+        {},
+        update,
+        { isFavorite: !update.isFavorite },
+      ),
     );
-
-
-    if (isEdit) {
-      // this._routePointEditComponent.reset(update);
-      this.init(update);
-    }
   }
 
   _handleCloseEditClick() {
@@ -163,6 +172,12 @@ export default class RoutePoint {
   }
 
   _handleSubmitClick(update) {
+    if (!isOnline()) {
+      toast('You can\'t save point offline');
+
+      return;
+    }
+
     const isMinorUpdate = isDatesEqual(this._data.dateFrom, update.dateFrom) && isDatesEqual(this._data.dateTo, update.dateTo);
 
     this._changeData(
@@ -173,6 +188,12 @@ export default class RoutePoint {
   }
 
   _handleDeleteClick(update) {
+    if (!isOnline()) {
+      toast('You can\'t delete task offline');
+
+      return;
+    }
+
     this._changeData(
       USER_ACTION.DELETE_POINT,
       UPDATE_TYPE.MAJOR,

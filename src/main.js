@@ -6,9 +6,12 @@ import RouteModel from './model/route.js';
 import FilterModel from './model/filter.js';
 import MockModel from './model/mock.js';
 import SiteMenuView from './view/site-menu.js';
-import Api from './api.js';
+import Api from './api/api.js';
 import { END_POINT, AUTHORIZATION, UPDATE_TYPE, MENU_ITEM, FILTER_TYPE } from './const.js';
 import { render, RenderPosition } from './utils/render.js';
+import Store from './api/store.js';
+import Provider from './api/provider.js';
+
 
 const detailContainer = document.querySelector('.trip-main');
 const statsContainer = document.querySelector('.page-main .page-body__container');
@@ -21,6 +24,9 @@ render(siteMenuContainer, siteMenuComponent, RenderPosition.BEFOREEND);
 
 const api = new Api(END_POINT, AUTHORIZATION);
 
+const store = new Store(window.localStorage);
+const apiWithProvider = new Provider(api, store);
+
 const routeModel = new RouteModel();
 const filterModel = new FilterModel();
 const mockModel = new MockModel();
@@ -32,27 +38,23 @@ models.set('mockModel', mockModel);
 
 const detailPresenter = new DetailPresenter(detailContainer, models);
 const statsPresenter = new StatsPresenter(statsContainer, models);
-const routeBoardPresenter = new RouteBoardPresenter(routePointsBoardContainer, models, api);
+const routeBoardPresenter = new RouteBoardPresenter(routePointsBoardContainer, models, apiWithProvider);
 const filterPresenter = new FilterPresenter(filterContainer, models);
 
 const getDataFromServer = async () => {
-  let blankOffers, blankDestinations, routePoints;
-
-  await api.getOffers().then((offers) => {
-    blankOffers = offers;
+  await apiWithProvider.getOffers().then((offers) => {
+    mockModel.setOffersData(offers);
   });
 
-  await api.getDestinations().then((destinations) => {
-    blankDestinations = destinations;
+  await apiWithProvider.getDestinations().then((destinations) => {
+    mockModel.setDestinationsData(destinations);
   });
 
-  await api.getPoints().then((points) => {
-    routePoints = points;
+  await apiWithProvider.getPoints().then((points) => {
+    routeModel.setData(UPDATE_TYPE.INIT, points);
+  }).catch(() => {
+    routeModel.setData(UPDATE_TYPE.INIT, []);
   });
-
-  mockModel.setOffersData(blankOffers);
-  mockModel.setDestinationsData(blankDestinations);
-  routeModel.setData(UPDATE_TYPE.INIT, routePoints);
 };
 
 getDataFromServer();
@@ -88,3 +90,16 @@ detailPresenter.init();
 filterPresenter.init();
 routeBoardPresenter.init();
 
+window.addEventListener('load', () => {
+  navigator.serviceWorker.register('/sw.js');
+});
+
+
+window.addEventListener('online', () => {
+  document.title = document.title.replace(' [offline]', '');
+  apiWithProvider.sync();
+});
+
+window.addEventListener('offline', () => {
+  document.title += ' [offline]';
+});

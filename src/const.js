@@ -54,6 +54,10 @@ export const BACKGROUND_COLORS = {
   'restaurant': 'rgba(205, 220, 57, 0.6)',
 };
 
-export const AUTHORIZATION = 'Basic Z2iZ2y8b28G0';
-export const END_POINT = 'https://14.ecmascript.pages.academy/big-trip/';
+export const STORE_PREFIX = 'bigtrip-localstorage';
+export const STORE_VER = 'v15';
+export const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
+
+export const AUTHORIZATION = 'Basic s2iZ2y2b28z6';
+export const END_POINT = 'https://15.ecmascript.pages.academy/big-trip';
 
