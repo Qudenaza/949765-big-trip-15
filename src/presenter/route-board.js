@@ -1,4 +1,4 @@
-import RoutePointPresenter from './route-point.js';
+import RoutePointPresenter, { State as RoutePresenterViewState } from './route-point.js';
 import RoutePointNewPresenter from './route-point-new.js';
 import RoutePointListView from '../view/route-point-list.js';
 import LoadingView from '../view/loading.js';
@@ -214,15 +214,32 @@ export default class RouteBoard {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case USER_ACTION.UPDATE_POINT:
+        this._routePointPresenter.get(update.id).setViewState(RoutePresenterViewState.SAVING);
+
         this._api.updatePoint(update).then((response) => {
           this._routeModel.updatePoint(updateType, response);
+        }).catch(() => {
+          this._routePointPresenter.get(update.id).setViewState(RoutePresenterViewState.ABORTING);
         });
         break;
       case USER_ACTION.ADD_POINT:
-        this._routeModel.addPoint(updateType, update);
+        this._routePointNewPresenter.setSaving();
+
+        this._api.addPoint(update).then((response) => {
+          this._routeModel.addPoint(updateType, response);
+        }).catch(() => {
+          this._routePointNewPresenter.setAborting();
+        });
         break;
       case USER_ACTION.DELETE_POINT:
-        this._routeModel.deletePoint(updateType, update);
+        this._routePointPresenter.get(update.id).setViewState(RoutePresenterViewState.DELETING);
+
+        this._api.deletePoint(update).then(() => {
+          this._routeModel.deletePoint(updateType, update);
+        }).catch(() => {
+          this._routePointPresenter.get(update.id).setViewState(RoutePresenterViewState.ABORTING);
+        });
+
         break;
     }
   }
