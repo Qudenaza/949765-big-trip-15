@@ -1,6 +1,5 @@
 import SmartView from './smart.js';
 import he from 'he';
-import { formatDate } from '../utils/date.js';
 import flatpickr from 'flatpickr';
 import { Russian } from 'flatpickr/dist/l10n/ru.js';
 import { nanoid } from 'nanoid';
@@ -34,18 +33,24 @@ const createRejectTemplate = (isNew, isDeleting) => {
   return `<button class="event__reset-btn" type="reset">${isNew ? 'Cancel' : 'Delete'}</button>`;
 };
 
+const checkDisabled = (city, dateFrom, dateTo) => {
+  if (!city || !dateFrom || !dateTo) {
+    return 'disabled';
+  }
+};
+
 const createRoutePointEditTemplate = (data, blankOffers, destinations, isNew = false) => {
   const { basePrice, type, dateFrom, dateTo, destination: {description, pictures, name: city}, isFavorite, isDisabled, isSaving, isDeleting, offers } = data;
 
   return `<li class="trip-events__item">
-  <form class="event event--edit" action="#" method="post">
+  <form class="event event--edit" action="#" method="post" autocomplete="off">
     <header class="event__header">
       <div class="event__type-wrapper">
         <label class="event__type event__type-btn" for="event-type-toggle-1">
           <span class="visually-hidden">Choose event type</span>
           <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
         </label>
-        <input class="event__type-toggle visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
+        <input class="event__type-toggle visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''} required>
 
         <div class="event__type-list">
           <fieldset class="event__type-group">
@@ -56,10 +61,8 @@ const createRoutePointEditTemplate = (data, blankOffers, destinations, isNew = f
       </div>
 
       <div class="event__field-group event__field-group--destination">
-        <label class="event__label event__type-output" for="event-destination-1">
-          ${type}
-        </label>
-        <input class="event__input event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1" onkeyup="this.value=this.value=''" ${isDisabled ? 'disabled' : ''}>
+        <label class="event__label event__type-output" for="event-destination-1">${type === 'transport' ? '' : type}</label>
+        <input class="event__input event__input--destination" id="event-destination-1" type="text" name="event-destination" list="destination-list-1" ${isDisabled || type === 'transport' ? 'disabled' : ''} required value="${city}" onkeyup="this.value=''">
         <datalist id="destination-list-1">
           ${Object.keys(destinations).map((item) => `<option value="${item}"></option>`)}
         </datalist>
@@ -67,10 +70,10 @@ const createRoutePointEditTemplate = (data, blankOffers, destinations, isNew = f
 
       <div class="event__field-group event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(dateFrom, 'DD/MM/YY HH:mm')}"  ${isDisabled ? 'disabled' : ''}>
+        <input class="event__input event__input--time" id="event-start-time-1" type="text" name="event-start-time" ${isDisabled ? 'disabled' : ''} required placeholder="--/--/-- --:--">
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate(dateTo, 'DD/MM/YY HH:mm')}"  ${isDisabled ? 'disabled' : ''}>
+        <input class="event__input event__input--time" id="event-end-time-1" type="text" name="event-end-time" ${isDisabled ? 'disabled' : ''} required placeholder="--/--/-- --:--">
       </div>
 
       <div class="event__field-group event__field-group--price">
@@ -78,9 +81,9 @@ const createRoutePointEditTemplate = (data, blankOffers, destinations, isNew = f
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}"  ${isDisabled ? 'disabled' : ''}>
+        <input class="event__input event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}"  ${isDisabled ? 'disabled' : ''} required>
       </div>
-      <button class="event__save-btn btn btn--blue" type="submit">${isSaving ? 'Saving...' : 'Save'}</button>
+      <button class="event__save-btn btn btn--blue" type="submit" ${checkDisabled(city, dateFrom, dateTo, basePrice)}>${isSaving ? 'Saving...' : 'Save'}</button>
       ${createRejectTemplate(isNew, isDeleting)}
       ${isNew ? '' : `<button class="event__favorite-btn ${isFavorite ? 'event__favorite-btn--active' : ''}" type="button"  ${isDisabled ? 'disabled' : ''}>
         <span class="visually-hidden">Add to favorite</span>
@@ -92,7 +95,7 @@ const createRoutePointEditTemplate = (data, blankOffers, destinations, isNew = f
         <span class="visually-hidden">Open event</span>
       </button>`}
     </header>
-    ${blankOffers[type].length || city ? `<section class="event__details">
+    ${!isNew && blankOffers[type].length || city ? `<section class="event__details">
       ${blankOffers[type].length ? `<section class="event__section event__section--offers">
         <h3 class="event__section-title event__section-title--offers">Offers</h3>
         <div class="event__available-offers">
@@ -105,7 +108,7 @@ const createRoutePointEditTemplate = (data, blankOffers, destinations, isNew = f
         <p class="event__destination-description">${description}</p>
         <div class="event__photos-container">
           <div class="event__photos-tape">
-          ${pictures.map((picture) => `<img class="event__photo" src="${picture.src}" alt="Event photo">`).join('')}
+          ${pictures.map((picture) => `<img class="event__photo" src="${picture.src.replace('http', 'https')}" alt="Event photo">`).join('')}
           </div>
         </div>
       </section>` : ''}
@@ -194,7 +197,6 @@ export default class RoutePointEdit extends SmartView {
     }
   }
 
-
   _eventTypeChangeHandler(evt) {
     this._eventType = evt.target.value;
 
@@ -216,18 +218,14 @@ export default class RoutePointEdit extends SmartView {
   }
 
   _dateFromChangeHandler([dateFrom]) {
-    const date = dateFrom.setHours(dateFrom.getHours() + 3);
-
     this.updateData({
-      dateFrom: formatDate(date),
+      dateFrom,
     });
   }
 
   _dateToChangeHandler([dateTo]) {
-    const date = dateTo.setHours(dateTo.getHours() + 3);
-
     this.updateData({
-      dateTo: formatDate(date),
+      dateTo,
     });
   }
 
@@ -280,6 +278,7 @@ export default class RoutePointEdit extends SmartView {
         dateFormat: 'd/m/y H:i',
         locale: Russian,
         enableTime: true,
+        defaultDate: this._data.dateFrom,
         maxDate: this._data.dateTo,
         onClose: this._dateFromChangeHandler.bind(this),
         time_24hr: true, // eslint-disable-line
@@ -292,6 +291,7 @@ export default class RoutePointEdit extends SmartView {
         locale: Russian,
         enableTime: true,
         minDate: this._data.dateFrom,
+        defaultDate: this._data.dateTo,
         onClose: this._dateToChangeHandler.bind(this),
         time_24hr: true, // eslint-disable-line
       },

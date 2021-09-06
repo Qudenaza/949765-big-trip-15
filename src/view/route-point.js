@@ -6,16 +6,16 @@ const createRoutePointTemplate = (data) => {
 
   return `<li class="trip-events__item">
   <div class="event">
-    <time class="event__date" datetime="${formatDate(dateFrom, 'YYYY-MM-DD')}">${formatDate(dateFrom, 'MMM  DD')}</time>
+    <time class="event__date" datetime="${formatDate(dateFrom, 'YYYY-MM-DD', false)}">${formatDate(dateFrom, 'MMM  DD', false)}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
     <h3 class="event__title">${type} ${city}</h3>
     <div class="event__schedule">
       <p class="event__time">
-        <time class="event__start-time" datetime="${formatDate(dateFrom, 'YYYY-MM-DD[T]HH:mm')}}">${formatDate(dateFrom, 'HH:mm')}</time>
+        <time class="event__start-time" datetime="${formatDate(dateFrom, 'YYYY-MM-DD[T]HH:mm')}}">${formatDate(dateFrom, 'HH:mm', false)}</time>
         &mdash;
-        <time class="event__end-time" datetime="${formatDate(dateTo, 'YYYY-MM-DD[T]HH:mm')}">${formatDate(dateTo, 'HH:mm')}</time>
+        <time class="event__end-time" datetime="${formatDate(dateTo, 'YYYY-MM-DD[T]HH:mm')}">${formatDate(dateTo, 'HH:mm', false)}</time>
       </p>
       <p class="event__duration">${calculateDuration(dateFrom, dateTo)}</p>
     </div>
@@ -59,7 +59,7 @@ export default class RoutePoint extends AbstractView {
   }
 
   _favoriteClickHandler() {
-    this._callback.favoriteClick(this._data, false);
+    this._callback.favoriteClick(this._data);
   }
 
   setEditOpenClickHandler(callback) {

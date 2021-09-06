@@ -1,6 +1,7 @@
 import FilterView from '../view/filter.js';
 import { render, RenderPosition, replace, remove } from '../utils/render.js';
 import { FILTER_TYPE, UPDATE_TYPE } from '../const.js';
+import { filter } from '../utils/filter.js';
 
 export default class Filter {
   constructor(filterContainer, models) {
@@ -33,14 +34,16 @@ export default class Filter {
 
   _handleModelEvent() {
     this.init();
+
+    this._handleFilterStatus();
   }
 
-  _handleFilterTypeChange(filter) {
-    if (this._filterModel.filter === filter) {
+  _handleFilterTypeChange(selectedFilter) {
+    if (this._filterModel.filter === selectedFilter) {
       return;
     }
 
-    this._filterModel.setFilter(UPDATE_TYPE.MAJOR, filter);
+    this._filterModel.setFilter(UPDATE_TYPE.MAJOR, selectedFilter);
   }
 
   _getFilters() {
@@ -48,14 +51,25 @@ export default class Filter {
   }
 
   disableFilters() {
-    const filters = document.querySelectorAll('.trip-filters__filter-input');
-
-    filters.forEach((filter) => filter.setAttribute('disabled', true));
+    this._filterComponent.disableFilters();
   }
 
   enableFilters() {
-    const filters = document.querySelectorAll('.trip-filters__filter-input');
+    this._filterComponent.enableFilters();
+  }
 
-    filters.forEach((filter) => filter.removeAttribute('disabled'));
+  _handleFilterStatus() {
+    const data = this._routeModel.data;
+
+
+    for (const key in filter) {
+      if (!filter[key](data).length) {
+        this._filterComponent.setFilterStatus(key, 'disabled');
+
+        continue;
+      }
+
+      this._filterComponent.setFilterStatus(key, 'enabled');
+    }
   }
 }

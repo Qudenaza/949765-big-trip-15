@@ -5,13 +5,6 @@ dayjs.extend(utc);
 
 export const formatDate = (date, format, isUtc = true) => isUtc ? dayjs.utc(date).format(format) : dayjs(date).format(format);
 
-export const getCorrectTime = (date) => {
-  const hours = dayjs(date).utc().hour();
-  const minutes = dayjs(date).utc().minute();
-
-  return `${hours > 9 ? hours : `0${hours}`}:${minutes > 9 ? minutes : `0${minutes}`}`;
-};
-
 export const calculateDuration = (from, to, singleDate = false) => {
   const ms = singleDate ? singleDate : dayjs(to).diff(dayjs(from));
 
