@@ -67,6 +67,9 @@ export default class Route extends Observer {
         dateTo: point.date_to,
         isFavorite: point.is_favorite,
         totalPrice: point.offers.reduce((sum, current) => sum + current.price, point.base_price),
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
       },
     );
 
@@ -91,10 +94,14 @@ export default class Route extends Observer {
     );
 
     delete adaptedPoint.basePrice;
-    delete adaptedPoint.date_From;
+    delete adaptedPoint.dateFrom;
+    delete adaptedPoint.dateNow;
     delete adaptedPoint.dateTo;
     delete adaptedPoint.isFavorite;
     delete adaptedPoint.totalPrice;
+    delete adaptedPoint.isDisabled;
+    delete adaptedPoint.isSaving;
+    delete adaptedPoint.isDeleting;
 
     return adaptedPoint;
   }

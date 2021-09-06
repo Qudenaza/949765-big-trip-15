@@ -37,3 +37,5 @@ export const handlePseudo = (remove)  => {
 
   elements.forEach((element) => element.classList.remove('hide-pseudo'));
 };
+
+export const isOnline = () => window.navigator.onLine;

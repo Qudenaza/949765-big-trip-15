@@ -1,5 +1,5 @@
-import RouteModel from './model/route.js';
-import MockModel from './model/mock.js';
+import RouteModel from '../model/route.js';
+import MockModel from '../model/mock.js';
 
 const Method = {
   GET: 'GET',
@@ -50,7 +50,7 @@ export default class Api {
 
   addPoint(point) {
     return this._load({
-      url: 'points',
+      url: 'points/',
       method: Method.POST,
       body: JSON.stringify(RouteModel.adaptToServer(point)),
       headers: new Headers({'Content-Type': 'application/json'}),
@@ -64,6 +64,16 @@ export default class Api {
       url: `points/${point.id}`,
       method: Method.DELETE,
     });
+  }
+
+  sync(data) {
+    return this._load({
+      url: 'points/sync',
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    })
+      .then(Api.toJSON);
   }
 
   _load({
