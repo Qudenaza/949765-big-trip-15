@@ -8,7 +8,7 @@ import NewButtonView from '../view/new-button.js';
 import { sort } from '../utils/sort.js';
 import { filter } from '../utils/filter.js';
 import { render, RenderPosition, remove, replace } from '../utils/render.js';
-import { USER_ACTION, UPDATE_TYPE, SORT_TYPE } from '../const.js';
+import { USER_ACTION, UPDATE_TYPE, SORT_TYPE, FILTER_TYPE } from '../const.js';
 import { handlePseudo, isOnline } from '../utils/common.js';
 import { toast } from '../utils/toast.js';
 
@@ -37,7 +37,7 @@ export default class RouteBoard {
 
     this._renderNewButton();
 
-    this._newButtonComponent.setClickHandler(this._handleNewButtonClick.bind(this));
+    this._newButtonComponent.setClickHandler(this._createNewPoint.bind(this));
   }
 
   init(isTabChange = false) {
@@ -51,11 +51,13 @@ export default class RouteBoard {
       this._newButtonComponent.disable();
     }
 
+    this._container.classList.remove('trip-events--hidden');
+
     this._routeModel.addObserver(this._handleModelEvent.bind(this));
     this._filterModel.addObserver(this._handleModelEvent.bind(this));
   }
 
-  createRoutePoint() {
+  _createNewPoint() {
     if (!isOnline()) {
       toast('You can\'t create new point offline');
 
@@ -72,6 +74,16 @@ export default class RouteBoard {
       return;
     }
 
+    if (this._routePointPresenter.size) {
+      this._handleModeChange();
+    }
+
+    this._currentSortType = SORT_TYPE.DAY;
+    this._filterModel.setFilter(UPDATE_TYPE.MAJOR, FILTER_TYPE.ALL);
+
+    this._clearRouteBoard();
+    this._renderRouteBoard();
+
     this._routePointNewPresenter.init();
   }
 
@@ -87,6 +99,8 @@ export default class RouteBoard {
     this._filterModel.removeObserver(this._handleModelEvent.bind(this));
 
     this._isLoading = false;
+
+    this._container.classList.add('trip-events--hidden');
   }
 
   _getRoutePointsData() {
@@ -140,8 +154,6 @@ export default class RouteBoard {
     remove(this._noRouteComponent);
     remove(this._loadingComponent);
     remove(this._routePointListComponent);
-
-    this._currentSortType = SORT_TYPE.DAY;
   }
 
   _renderSort() {
@@ -149,7 +161,7 @@ export default class RouteBoard {
       this._sortComponent = null;
     }
 
-    this._sortComponent = new SortView();
+    this._sortComponent = new SortView(this._currentSortType);
 
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange.bind(this));
 
@@ -175,11 +187,11 @@ export default class RouteBoard {
   }
 
   _createRoutePoint(data) {
-    const routePointPresenter = new RoutePointPresenter(this._routePointListComponent, this._handleViewAction.bind(this), this._handleModeChange.bind(this), this._mockModel);
+    const presenter = new RoutePointPresenter(this._routePointListComponent, this._handleViewAction.bind(this), this._handleModeChange.bind(this), this._mockModel);
 
-    routePointPresenter.init(data);
+    presenter.init(data);
 
-    this._routePointPresenter.set(data.id, routePointPresenter);
+    this._routePointPresenter.set(data.id, presenter);
   }
 
   _renderLoading() {
@@ -198,12 +210,6 @@ export default class RouteBoard {
     }
 
     this._noRouteComponent.message = this._filterModel.filter;
-
-    // if (this._routePointListComponent) {
-    //   replace(this._noRouteComponent, this._routePointListComponent);
-
-    //   return;
-    // }
 
     render(this._container, this._noRouteComponent, RenderPosition.BEFOREEND);
   }
@@ -277,9 +283,5 @@ export default class RouteBoard {
     this._clearRoutePoints();
 
     this._renderRoutePoints();
-  }
-
-  _handleNewButtonClick() {
-    this.createRoutePoint();
   }
 }

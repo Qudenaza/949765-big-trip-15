@@ -1,4 +1,5 @@
 import Observer from '../utils/observer.js';
+import { formatDate } from '../utils/date.js';
 
 export default class Route extends Observer {
   constructor(data) {
@@ -58,50 +59,35 @@ export default class Route extends Observer {
   }
 
   static adaptToClient(point) {
-    const adaptedPoint = Object.assign(
-      {},
-      point,
-      {
-        basePrice: point.base_price,
-        dateFrom: point.date_from,
-        dateTo: point.date_to,
-        isFavorite: point.is_favorite,
-        totalPrice: point.offers.reduce((sum, current) => sum + current.price, point.base_price),
-        isDisabled: false,
-        isSaving: false,
-        isDeleting: false,
-      },
-    );
-
-    delete adaptedPoint.base_price;
-    delete adaptedPoint.date_from;
-    delete adaptedPoint.date_to;
-    delete adaptedPoint.is_favorite;
+    const adaptedPoint = {
+      id: point.id,
+      basePrice: point.base_price,
+      dateFrom: new Date(point.date_from),
+      dateTo: new Date(point.date_to),
+      totalPrice: point.offers.reduce((sum, current) => sum + current.price, point.base_price),
+      isFavorite: point.is_favorite,
+      offers: point.offers,
+      destination: point.destination,
+      type: point.type,
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
+    };
 
     return adaptedPoint;
   }
 
   static adaptToServer(point) {
-    const adaptedPoint = Object.assign(
-      {},
-      point,
-      {
-        base_price: point.basePrice, // eslint-disable-line
-        date_from: point.dateFrom, // eslint-disable-line
-        date_to: point.dateTo, // eslint-disable-line
-        is_favorite: point.isFavorite, // eslint-disable-line
-      },
-    );
-
-    delete adaptedPoint.basePrice;
-    delete adaptedPoint.dateFrom;
-    delete adaptedPoint.dateNow;
-    delete adaptedPoint.dateTo;
-    delete adaptedPoint.isFavorite;
-    delete adaptedPoint.totalPrice;
-    delete adaptedPoint.isDisabled;
-    delete adaptedPoint.isSaving;
-    delete adaptedPoint.isDeleting;
+    const adaptedPoint = {
+      id: point.id,
+      type: point.type,
+      offers: point.offers,
+      destination: point.destination,
+      base_price: point.basePrice, // eslint-disable-line
+      date_from: formatDate(point.dateFrom), // eslint-disable-line
+      date_to: formatDate(point.dateTo), // eslint-disable-line
+      is_favorite: point.isFavorite, // eslint-disable-line
+    };
 
     return adaptedPoint;
   }

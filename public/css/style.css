@@ -650,9 +650,6 @@ main {
   cursor: pointer;
   -webkit-transition: color 0.2s;
   transition: color 0.2s; }
-  .event__type-label::first-letter {
-    text-transform: uppercase;
-  }
   .event__type-label::before {
     content: "";
     position: absolute;
@@ -793,6 +790,7 @@ main {
   .event__field-group--destination {
     width: 290px; }
 
+
 .event__label {
   margin-right: 5px;
   cursor: pointer; }
@@ -812,6 +810,11 @@ main {
   border: none; }
   .event__input--destination {
     width: 150px; }
+    .event__input--destination:disabled,
+    .event__input--time:disabled,
+    .event__input--price:disabled {
+      background-color: #fff;
+    }
     .event__input--destination::-webkit-calendar-picker-indicator {
       display: none; }
   .event__input--time {
@@ -987,6 +990,7 @@ main {
 
 .statistics__item:not(:last-child) {
   margin-bottom: 78px; }
+
 
 @keyframes shake {
   0%,

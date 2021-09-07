@@ -1,9 +1,7 @@
-import { formatDate } from './utils/date';
-
 export const BLANK_DATA = {
   basePrice: 0,
-  dateFrom: formatDate(new Date()),
-  dateNow: formatDate(new Date()),
+  dateFrom: '',
+  dateTo: '',
   destination: {
     name: '',
     description: '',
@@ -11,7 +9,7 @@ export const BLANK_DATA = {
   },
   isFavorite: false,
   offers: [],
-  type: 'taxi',
+  type: 'transport',
 };
 
 export const SORT_TYPE = {
@@ -58,6 +56,6 @@ export const STORE_PREFIX = 'bigtrip-localstorage';
 export const STORE_VER = 'v15';
 export const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
-export const AUTHORIZATION = 'Basic s2iZ2y2b28z6';
-export const END_POINT = 'https://15.ecmascript.pages.academy/big-trip';
+export const AUTHORIZATION = 'Basic Z2ij2y8b2zz6';
+export const END_POINT = 'https://14.ecmascript.pages.academy/big-trip/';
 

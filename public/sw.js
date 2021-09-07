@@ -40,17 +40,13 @@ self.addEventListener('install', (evt) => {
 self.addEventListener('activate', (evt) => {
   evt.waitUntil(
     caches.keys()
-      .then(
-        (keys) => Promise.all(
-          keys.map(
-            (key) => {
-              if (key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME) {
-                return caches.delete(key);
-              }
+      .then((keys) => Promise.all(keys.map((key) => {
+            if (key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME) {
+              return caches.delete(key);
+            }
 
-              return null;
-            })
-            .filter((key) => key !== null),
+            return null;
+          }).filter((key) => key !== null),
         ),
       ),
   );

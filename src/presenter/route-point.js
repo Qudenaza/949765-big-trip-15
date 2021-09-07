@@ -102,8 +102,19 @@ export default class RoutePoint {
     }
   }
 
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._routePointEditComponent.reset(this._data);
+
+      this._replaceEditToPoint();
+    }
+  }
+
   destroy() {
     remove(this._routePointComponent);
+
+    this._routePointEditComponent.destroyDatepicker();
+
     remove(this._routePointEditComponent);
   }
 
@@ -129,14 +140,6 @@ export default class RoutePoint {
     this._mode = Mode.DEFAULT;
   }
 
-  resetView() {
-    if (this._mode !== Mode.DEFAULT) {
-      this._routePointEditComponent.reset(this._data);
-
-      this._replaceEditToPoint();
-    }
-  }
-
   _handleOpenEditClick() {
     if (!isOnline()) {
       toast('You can\'t edit point offline');
@@ -148,12 +151,6 @@ export default class RoutePoint {
   }
 
   _handleFavoriteClick(update) {
-    if (!isOnline()) {
-      toast('You can\'t edit point offline');
-
-      return;
-    }
-
     this._changeData(
       USER_ACTION.UPDATE_POINT,
       UPDATE_TYPE.MINOR,
@@ -175,10 +172,12 @@ export default class RoutePoint {
     if (!isOnline()) {
       toast('You can\'t save point offline');
 
+      this.setViewState(State.ABORTING);
+
       return;
     }
 
-    const isMinorUpdate = isDatesEqual(this._data.dateFrom, update.dateFrom) && isDatesEqual(this._data.dateTo, update.dateTo);
+    const isMinorUpdate = this._data.basePrice === update.basePrice && (isDatesEqual(this._data.dateFrom, update.dateFrom) && isDatesEqual(this._data.dateTo, update.dateTo));
 
     this._changeData(
       USER_ACTION.UPDATE_POINT,
@@ -189,7 +188,9 @@ export default class RoutePoint {
 
   _handleDeleteClick(update) {
     if (!isOnline()) {
-      toast('You can\'t delete task offline');
+      toast('You can\'t delete point offline');
+
+      this.setViewState(State.ABORTING);
 
       return;
     }

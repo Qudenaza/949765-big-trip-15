@@ -2,6 +2,8 @@ import RoutePointEditView from '../view/route-point-edit.js';
 import { remove, render, replace, RenderPosition } from '../utils/render.js';
 import { USER_ACTION, UPDATE_TYPE } from '../const.js';
 import { BLANK_DATA } from '../const.js';
+import { isOnline } from '../utils/common.js';
+import { toast } from '../utils/toast.js';
 
 export default class RoutePointNew {
   constructor(container, noRoute, newButton, changeData, mockModel, filterModel) {
@@ -78,6 +80,14 @@ export default class RoutePointNew {
   }
 
   _handleFormSubmit(update) {
+    if (!isOnline()) {
+      toast('You can\'t save point offline');
+
+      this.setAborting();
+
+      return;
+    }
+
     this._changeData(
       USER_ACTION.ADD_POINT,
       UPDATE_TYPE.MAJOR,
