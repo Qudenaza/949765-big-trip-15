@@ -41,7 +41,7 @@ export const MENU_ITEM = {
   STATS: 'Stats',
 };
 
-export const BACKGROUND_COLORS = {
+export const BACKGROUND_COLOR = {
   'taxi': 'rgba(252, 224, 0, 0.6)',
   'bus': 'rgba(233, 30, 99, 0.6)',
   'train': 'rgba(3, 169, 244, 0.6)',
@@ -51,10 +51,6 @@ export const BACKGROUND_COLORS = {
   'check-in': 'rgba(96, 125, 139, 0.6)',
   'restaurant': 'rgba(205, 220, 57, 0.6)',
 };
-
-export const STORE_PREFIX = 'bigtrip-localstorage';
-export const STORE_VER = 'v15';
-export const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
 export const AUTHORIZATION = 'Basic Z2ij2y8b2zz6';
 export const END_POINT = 'https://14.ecmascript.pages.academy/big-trip/';

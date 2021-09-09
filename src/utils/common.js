@@ -1,13 +1,6 @@
 import { sort } from './sort.js';
 import { SORT_TYPE } from '../const.js';
 
-export const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
-
 export const calculateTotalCost = (data) => data.reduce((sum, current) => sum + current.totalPrice , 0);
 
 export const calculateRouteWay = (data) => sort[SORT_TYPE.DAY](data).map((point) => point.destination.name);

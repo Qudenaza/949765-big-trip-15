@@ -1,6 +1,6 @@
 import AbstractView from './abstract.js';
 
-const SORT_SETTINGS = [
+const SORT_SETTING = [
   {
     title: 'day',
     isDisabled: false,
@@ -34,7 +34,7 @@ const createSortItem = (sortSettings, currentSortType) => {
 
 const createSortTemplate = (currentSortType) => {
 
-  const sortItemsTemplate = SORT_SETTINGS.slice(0).map((sortItem) => createSortItem(sortItem, currentSortType)).join('');
+  const sortItemsTemplate = SORT_SETTING.slice(0).map((sortItem) => createSortItem(sortItem, currentSortType)).join('');
 
   return `<form class="trip-events__trip-sort trip-sort" action="#" method="get">${sortItemsTemplate}</form>`;
 };

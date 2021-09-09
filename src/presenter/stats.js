@@ -3,7 +3,7 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { remove } from '../utils/render.js';
 import { calculateDuration } from '../utils/date.js';
-import { BACKGROUND_COLORS } from '../const.js';
+import { BACKGROUND_COLOR } from '../const.js';
 import { calculateCost, calculateType, calculateTime } from '../utils/stats.js';
 import { render, RenderPosition } from '../utils/render.js';
 
@@ -35,7 +35,7 @@ export default class Stats {
     const moneySpend = calculateCost(this._data);
     const labels = [...moneySpend.keys()];
     const data = [...moneySpend.values()];
-    const backgroundColor = labels.map((item) => BACKGROUND_COLORS[item]);
+    const backgroundColor = labels.map((item) => BACKGROUND_COLOR[item]);
 
     ctx.height = 275;
 
@@ -108,7 +108,7 @@ export default class Stats {
     const timesByType = calculateType(this._data);
     const labels = [...timesByType.keys()];
     const data = [...timesByType.values()];
-    const backgroundColor = labels.map((item) => BACKGROUND_COLORS[item]);
+    const backgroundColor = labels.map((item) => BACKGROUND_COLOR[item]);
 
     ctx.height = 275;
 
@@ -181,7 +181,7 @@ export default class Stats {
     const timeSpend = calculateTime(this._data);
     const labels = [...timeSpend.keys()];
     const data = [...timeSpend.values()];
-    const backgroundColor = labels.map((item) => BACKGROUND_COLORS[item]);
+    const backgroundColor = labels.map((item) => BACKGROUND_COLOR[item]);
 
     ctx.height = 275;
 
