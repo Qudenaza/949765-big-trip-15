@@ -60,15 +60,15 @@ export default class Route extends Observer {
 
   static adaptToClient(point) {
     const adaptedPoint = {
-      id: point.id,
-      basePrice: point.base_price,
-      dateFrom: new Date(point.date_from),
-      dateTo: new Date(point.date_to),
-      totalPrice: point.offers.reduce((sum, current) => sum + current.price, point.base_price),
-      isFavorite: point.is_favorite,
-      offers: point.offers,
-      destination: point.destination,
-      type: point.type,
+      id: point['id'],
+      basePrice: point['base_price'],
+      dateFrom: new Date(point['date_from']),
+      dateTo: new Date(point['date_to']),
+      totalPrice: point.offers.reduce((sum, current) => sum + current['price'], point['base_price']),
+      isFavorite: point['is_favorite'],
+      offers: point['offers'],
+      destination: point['destination'],
+      type: point['type'],
       isDisabled: false,
       isSaving: false,
       isDeleting: false,
@@ -79,14 +79,14 @@ export default class Route extends Observer {
 
   static adaptToServer(point) {
     const adaptedPoint = {
-      id: point.id,
-      type: point.type,
-      offers: point.offers,
-      destination: point.destination,
-      base_price: point.basePrice, // eslint-disable-line
-      date_from: formatDate(point.dateFrom), // eslint-disable-line
-      date_to: formatDate(point.dateTo), // eslint-disable-line
-      is_favorite: point.isFavorite, // eslint-disable-line
+      'id': point['id'],
+      'type': point['type'],
+      'offers': point['offers'],
+      'destination': point['destination'],
+      'base_price': point['basePrice'],
+      'date_from': formatDate(point['dateFrom']),
+      'date_to': formatDate(point['dateTo']),
+      'is_favorite': point['isFavorite'],
     };
 
     return adaptedPoint;

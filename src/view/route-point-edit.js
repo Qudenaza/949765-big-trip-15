@@ -275,25 +275,25 @@ export default class RoutePointEdit extends SmartView {
 
     this._datepickerFrom = flatpickr(this.getElement().querySelector('#event-start-time-1'),
       {
-        dateFormat: 'd/m/y H:i',
-        locale: Russian,
-        enableTime: true,
-        defaultDate: this._data.dateFrom,
-        maxDate: this._data.dateTo,
-        onClose: this._dateFromChangeHandler.bind(this),
-        time_24hr: true, // eslint-disable-line
+        'dateFormat': 'd/m/y H:i',
+        'locale': Russian,
+        'enableTime': true,
+        'defaultDate': this._data.dateFrom,
+        'maxDate': this._data.dateTo,
+        'onClose': this._dateFromChangeHandler.bind(this),
+        'time_24hr': true,
       },
     );
 
     this._datepickerTo = flatpickr(this.getElement().querySelector('#event-end-time-1'),
       {
-        dateFormat: 'd/m/y H:i',
-        locale: Russian,
-        enableTime: true,
-        minDate: this._data.dateFrom,
-        defaultDate: this._data.dateTo,
-        onClose: this._dateToChangeHandler.bind(this),
-        time_24hr: true, // eslint-disable-line
+        'dateFormat': 'd/m/y H:i',
+        'locale': Russian,
+        'enableTime': true,
+        'minDate': this._data.dateFrom,
+        'defaultDate': this._data.dateTo,
+        'onClose': this._dateToChangeHandler.bind(this),
+        'time_24hr': true,
       },
     );
   }

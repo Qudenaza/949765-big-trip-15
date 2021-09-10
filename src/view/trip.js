@@ -6,8 +6,8 @@ const createRouteTemplate = (routeTrip) => {
     return '';
   }
 
-  return routeTrip.length <= 3 ? routeTrip.map((point, index, array) => {
-    if (index + 1 === array.length) {
+  return routeTrip.length <= 3 ? routeTrip.map((point, index, trip) => {
+    if (index + 1 === trip.length) {
       return `${point}`;
     }
 

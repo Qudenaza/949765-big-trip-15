@@ -74,6 +74,8 @@ export default class RoutePoint {
       return;
     }
 
+    document.removeEventListener('keydown', this._escKeyDownHandler);
+
     const resetFormState = () => {
       this._routePointEditComponent.updateData({
         isDisabled: false,
