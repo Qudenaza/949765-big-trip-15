@@ -38,6 +38,8 @@ export default class RoutePointNew {
   }
 
   setSaving() {
+    document.removeEventListener('keydown', this._escKeyDownHandler);
+
     this._routePointEditComponent.updateData({
       isDisabled: true,
       isSaving: true,
